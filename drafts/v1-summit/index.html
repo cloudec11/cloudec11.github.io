@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eric Chen — Software &amp; AI</title>
+<meta name="description" content="Eric Chen, Computer Science student at Western University. Full-stack apps, LLM agents and hackathon hardware.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1c20; --bg-2:#13252a; --ink:#eef1ec; --muted:#9fb0ad; --accent:#d8b46a; --line:rgba(238,241,236,.14);
+  --edge:clamp(20px,6vw,96px); --max:1240px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.65 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(var(--max),100% - 2*var(--edge));margin-inline:auto}
+.skip{position:absolute;left:-999px;top:8px;background:var(--accent);color:#111;padding:8px 14px;z-index:99}
+.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* nav */
+.nav{position:absolute;inset:0 0 auto;z-index:5}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:84px}
+.mark{font:600 20px/1 Newsreader,serif;letter-spacing:.04em}
+.nav ul{display:flex;gap:36px;list-style:none;font-size:14px;font-weight:500}
+.nav a.u{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .3s}
+.nav a.u:hover{background-size:100% 1px}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+.hero .bg{position:absolute;inset:0;z-index:-1}
+.hero .bg img{object-position:50% 40%;transform:scale(1.06);animation:settle 2.4s cubic-bezier(.2,.7,.2,1) forwards}
+.hero .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,28,32,.55) 0%,rgba(15,28,32,.15) 40%,rgba(15,28,32,.4) 70%,var(--bg) 100%)}
+.eyebrow{display:flex;align-items:center;gap:14px;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase}
+.eyebrow::before{content:"";width:56px;height:1px;background:currentColor}
+.hero h1{font:400 clamp(44px,6.4vw,92px)/1.02 Newsreader,serif;letter-spacing:-.01em;max-width:13ch;margin:22px 0 26px}
+.hero p{max-width:46ch;color:#dfe5e1;font-size:18px}
+.hero .actions{display:flex;gap:28px;align-items:center;margin-top:36px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 26px;border-radius:999px;background:var(--accent);color:#14201f;font-weight:700;font-size:15px;transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.btn:active{transform:translateY(0) scale(.98)}
+.link{display:inline-flex;align-items:center;gap:10px;min-height:48px;font-weight:600;font-size:15px}
+.link span{transition:transform .25s}
+.link:hover span{transform:translateX(5px)}
+.fact{position:absolute;right:var(--edge);bottom:48px;text-align:right;font-size:13px;color:var(--muted);max-width:280px}
+.fact b{display:block;color:var(--ink);font:400 22px/1.2 Newsreader,serif;margin-bottom:6px}
+.social{position:absolute;left:calc(var(--edge)/2 - 6px);top:50%;transform:translateY(-50%) rotate(-90deg);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+[data-enter]>*{opacity:0;transform:translateY(18px);animation:up .9s cubic-bezier(.2,.7,.2,1) forwards}
+[data-enter]>*:nth-child(2){animation-delay:.12s}[data-enter]>*:nth-child(3){animation-delay:.24s}[data-enter]>*:nth-child(4){animation-delay:.36s}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes settle{to{transform:scale(1)}}
+
+/* chapters */
+section{padding:clamp(80px,12vh,140px) 0}
+.chapter{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,96px);align-items:center;min-height:min(86vh,820px)}
+.chapter + .chapter{margin-top:clamp(40px,8vh,90px)}
+.chapter.flip .text{order:2}
+.num{font:600 clamp(96px,12vw,170px)/.8 Newsreader,serif;color:rgba(238,241,236,.07);margin-bottom:-.38em}
+.chapter h2{font:400 clamp(32px,3.6vw,52px)/1.1 Newsreader,serif;margin:18px 0 20px;position:relative}
+.chapter p{color:var(--muted);max-width:48ch}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 26px}
+.tags li{list-style:none;font-size:12px;letter-spacing:.06em;border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:#cdd6d2}
+.frame{aspect-ratio:4/5;overflow:hidden;border-radius:4px;display:block}
+.frame img{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.frame:hover img{transform:scale(1.03)}
+.award{color:var(--accent);font-size:13px;font-weight:700;letter-spacing:.04em}
+
+/* more */
+.more{border-top:1px solid var(--line)}
+.more h2,.exp h2{font:400 clamp(30px,3vw,44px)/1.1 Newsreader,serif;margin-bottom:40px}
+.rows{list-style:none}
+.rows li{border-bottom:1px solid var(--line)}
+.rows a{display:grid;grid-template-columns:1.2fr 2fr 1fr auto;gap:24px;align-items:baseline;padding:26px 0;transition:padding .3s,color .3s}
+.rows a:hover{padding-left:12px;color:var(--accent)}
+.rows .t{font:400 24px/1.2 Newsreader,serif}
+.rows .d{color:var(--muted);font-size:15px}
+.rows .y{font-size:13px;color:var(--muted)}
+
+.exp{background:var(--bg-2)}
+.exp .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}
+.job{border-top:1px solid var(--accent);padding-top:22px}
+.job h3{font:600 20px/1.3 Newsreader,serif;margin-bottom:4px}
+.job .when{font-size:13px;color:var(--accent);margin-bottom:14px;display:block}
+.job p{color:var(--muted);font-size:15px}
+.stack{margin-top:64px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;font-size:14px;color:var(--muted)}
+.stack b{display:block;color:var(--ink);font-weight:600;margin-bottom:6px;letter-spacing:.12em;text-transform:uppercase;font-size:11px}
+
+/* contact */
+.contact{position:relative;min-height:90vh;display:flex;align-items:flex-end;overflow:hidden;padding-bottom:64px}
+.contact .bg{position:absolute;inset:0;z-index:-1}
+.contact .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,rgba(15,28,32,.35) 45%,rgba(15,28,32,.85) 100%)}
+.contact h2{font:400 clamp(40px,5.4vw,80px)/1.05 Newsreader,serif;max-width:14ch;margin:20px 0 30px}
+.contact .links{display:flex;gap:28px;flex-wrap:wrap;margin-top:28px;font-size:14px}
+footer{border-top:1px solid var(--line);padding:26px 0;font-size:12px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media (max-width:860px){
+  .nav ul{gap:20px}.nav li.h{display:none}
+  .chapter{grid-template-columns:1fr;min-height:0}
+  .chapter.flip .text{order:0}
+  .frame{aspect-ratio:4/3}
+  .rows a{grid-template-columns:1fr;gap:4px}
+  .exp .grid,.stack{grid-template-columns:1fr}
+  .fact{position:static;text-align:left;margin-top:40px}
+  .social{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}[data-enter]>*{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<!-- Draft 1 · "Summit" — after reference 1 (dark slate, mountain hero, serif, numbered chapters). Photos: Unsplash stand-ins. -->
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#">EC</a>
+    <ul>
+      <li class="h"><a class="u" href="#work">Work</a></li>
+      <li class="h"><a class="u" href="#experience">Experience</a></li>
+      <li><a class="u" href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" style="padding:0">
+  <div class="bg"><img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=2200&q=75&auto=format&fit=crop" alt="A hiker with a red pack on a cliff edge facing a mountain range"></div>
+  <span class="social">GitHub · LinkedIn · Devpost</span>
+  <div class="wrap">
+    <div data-enter>
+      <div class="eyebrow">CS · Western University</div>
+      <h1>Eric Chen builds AI tools and full-stack apps.</h1>
+      <p>LLM agents, retrieval systems and the odd sensor-packed gadget. Looking for a Fall 2027 co-op.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:cloudec.11@gmail.com">Email Eric</a>
+        <a class="link" href="#work">See the work <span>↓</span></a>
+      </div>
+    </div>
+    <div class="fact"><b>1st place, RBC prize</b>Hack the North 2026, with Signal</div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <article class="chapter">
+      <div class="text">
+        <div class="num" aria-hidden="true">01</div>
+        <div class="eyebrow">Hack the North 2026</div>
+        <h2>Signal: research answers you can trace line by line</h2>
+        <p>A multi-agent financial research assistant. Every answer cites its source lines, and conflicting or missing data gets flagged instead of guessed. Hybrid BM25 and vector search in Elasticsearch, with the live agent trace streamed from FastAPI.</p>
+        <ul class="tags"><li>Python</li><li>FastAPI</li><li>Elasticsearch</li><li>MCP</li><li>MongoDB</li></ul>
+        <a class="link" href="https://devpost.com/software/temp-project-0sp3zv">Read the build <span>→</span></a>
+      </div>
+      <a class="frame" href="https://devpost.com/software/temp-project-0sp3zv"><img loading="lazy" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&q=75&auto=format&fit=crop" alt="Candlestick stock chart on a dark screen"></a>
+    </article>
+
+    <article class="chapter flip">
+      <div class="text">
+        <div class="num" aria-hidden="true">02</div>
+        <div class="eyebrow">Hack Western 12</div>
+        <h2>FindMySeat: live seat counts from the library floor</h2>
+        <p>Ultrasonic sensors on Raspberry Pis stream occupancy to a FastAPI backend and a live Next.js dashboard. A Gemini chat assistant suggests where to sit.</p>
+        <ul class="tags"><li>Raspberry Pi</li><li>FastAPI</li><li>Next.js</li><li>Gemini</li><li>Firebase</li></ul>
+        <a class="link" href="https://findmyseathackwestern.vercel.app">Open the demo <span>→</span></a>
+      </div>
+      <a class="frame" href="https://findmyseathackwestern.vercel.app"><img loading="lazy" src="https://images.unsplash.com/photo-1631553127988-36343ac5bb0c?w=1200&q=75&auto=format&fit=crop" alt="Close-up of a Raspberry Pi board"></a>
+    </article>
+
+    <article class="chapter">
+      <div class="text">
+        <div class="num" aria-hidden="true">03</div>
+        <div class="eyebrow">Hack the 6ix 2023</div>
+        <h2>GuideBot: a robot that describes the room</h2>
+        <p>A Bluetooth-driven ESP32 robot for visually impaired users, with TensorFlow object recognition naming what is nearby. <span class="award">MLH Best Accessibility Hack.</span></p>
+        <ul class="tags"><li>ESP32</li><li>C++</li><li>TensorFlow</li><li>JavaScript</li></ul>
+        <a class="link" href="https://devpost.com/software/guidebot">Read the build <span>→</span></a>
+      </div>
+      <a class="frame" href="https://devpost.com/software/guidebot"><img loading="lazy" src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=1200&q=75&auto=format&fit=crop" alt="Circuit boards laid out flat"></a>
+    </article>
+  </div>
+</section>
+
+<section class="more">
+  <div class="wrap">
+    <h2>More hackathon builds</h2>
+    <ul class="rows">
+      <li><a href="https://dorahacks.io/buidl/13396"><span class="t">Grip Guardian</span><span class="d">A sensor mouse that flags hand strain as it happens</span><span class="y">JAMHacks 8 · Best Dev Tool</span><span>→</span></a></li>
+      <li><a href="https://devpost.com/software/temp-rft3ge"><span class="t">IWitness</span><span class="d">City camera feeds that flag emergencies for first responders</span><span class="y">YRHacks 2023 · 2nd overall</span><span>→</span></a></li>
+      <li><a href="https://github.com/cloudec11"><span class="t">Everything else</span><span class="d">Experiments, coursework and forks on GitHub</span><span class="y">github.com/cloudec11</span><span>→</span></a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="exp" id="experience">
+  <div class="wrap">
+    <h2>Where I've worked</h2>
+    <div class="grid">
+      <div class="job"><h3>Korah Limited</h3><span class="when">Software Developer Intern · Summer 2026</span><p>An LLM-powered receptionist kiosk with an Alexa voice interface, backed by Python services on AWS Lambda.</p></div>
+      <div class="job"><h3>Autumn Co</h3><span class="when">Software Engineer Intern · Summer 2026</span><p>Python web scraping, frontend QA and refactoring.</p></div>
+      <div class="job"><h3>bizZone</h3><span class="when">Software Developer Co-op · Winter 2023</span><p>APIs, frontend QA and web development.</p></div>
+    </div>
+    <div class="stack">
+      <div><b>Languages</b>Python, JavaScript, Java, C, C++, HTML/CSS</div>
+      <div><b>Frameworks</b>React, Next.js, Node.js, FastAPI, Flask</div>
+      <div><b>Tools</b>AWS Lambda, Docker, Elasticsearch, MongoDB, OpenAI API, MCP</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="bg"><img loading="lazy" src="https://images.unsplash.com/photo-1512923927402-a9867a68180e?w=2200&q=75&auto=format&fit=crop" alt="Fog drifting over a forested mountain"></div>
+  <div class="wrap">
+    <div class="eyebrow">Fall 2027 co-op</div>
+    <h2>Hiring for a co-op term? Let's talk.</h2>
+    <a class="btn" href="mailto:cloudec.11@gmail.com">Email Eric</a>
+    <div class="links">
+      <a class="link" href="https://www.linkedin.com/in/eric-chen11">LinkedIn <span>↗</span></a>
+      <a class="link" href="https://github.com/cloudec11">GitHub <span>↗</span></a>
+      <a class="link" href="https://devpost.com/cloudec-11">Devpost <span>↗</span></a>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><span>© 2026 Eric Chen · London, Ontario</span><span>Photographs: Unsplash</span></div></footer>
+</body>
+</html>

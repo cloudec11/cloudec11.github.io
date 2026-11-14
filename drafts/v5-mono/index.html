@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eric Chen — Software &amp; AI</title>
+<meta name="description" content="Eric Chen, Computer Science student at Western University. Full-stack apps, LLM agents and hackathon hardware.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#161716;--bg-2:#1e1f1e;--ink:#f1f1ee;--muted:#9a9b97;--dim:#8b8c85;--line:rgba(241,241,238,.12);--edge:clamp(20px,5vw,72px);--max:1280px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 "Bricolage Grotesque",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(var(--max),100% - 2*var(--edge));margin-inline:auto}
+.mono{font:500 11px/1.5 "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--bg);padding:8px 14px;z-index:99}.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+.nav{position:absolute;inset:0 0 auto;z-index:10}
+.nav .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:80px}
+.mark{font:800 22px/1 "Bricolage Grotesque";letter-spacing:-.04em;font-stretch:75%}
+.nav ul{display:flex;gap:30px;list-style:none}
+.nav a.l{display:inline-block;padding:14px 0;color:var(--muted);transition:color .2s}
+.nav a.l:hover{color:var(--ink)}
+.nav a.l::before{content:"■ ";font-size:7px;vertical-align:middle;opacity:0;transition:opacity .2s}
+.nav a.l:hover::before{opacity:1}
+.nav .r{justify-self:end}
+
+.hero{position:relative;min-height:100svh;overflow:hidden;background:radial-gradient(ellipse 70% 60% at 55% 45%,#2a2b29 0%,var(--bg) 70%)}
+.hero h1{position:absolute;z-index:3;top:22vh;left:var(--edge);right:var(--edge);font:800 clamp(52px,8.6vw,138px)/.9 "Bricolage Grotesque";font-stretch:75%;letter-spacing:-.03em;text-transform:uppercase;pointer-events:none}
+.hero h1 span{display:block}
+.hero h1 span:nth-child(2){padding-left:16vw}
+.hero h1 span:nth-child(3){padding-left:4vw}
+.portrait{position:absolute;z-index:2;left:50%;bottom:0;width:min(34vw,460px);aspect-ratio:3/4;transform:translateX(-30%);overflow:hidden;mask-image:linear-gradient(180deg,#000 70%,transparent)}
+.portrait img{filter:grayscale(1) contrast(1.1) brightness(.85);object-position:50% 30%}
+.ring{position:absolute;z-index:4;left:50%;top:62%;width:0;height:0;perspective:1400px;transform:translateX(-50%)}
+.ring .spin{transform-style:preserve-3d;animation:orbit 34s linear infinite;transform:rotateX(-8deg)}
+.ring a{position:absolute;left:-74px;top:-52px;width:148px;height:104px;border:1px solid rgba(255,255,255,.18);background:#222;overflow:hidden;backface-visibility:hidden;transition:border-color .2s}
+.ring a:hover{border-color:#fff}
+.ring a img{filter:grayscale(1) contrast(1.05);transition:transform .6s}
+.ring a:hover img{transform:scale(1.03)}
+.ring a:nth-child(1){transform:rotateY(0deg) translateZ(min(38vw,520px))}
+.ring a:nth-child(2){transform:rotateY(51deg) translateZ(min(38vw,520px))}
+.ring a:nth-child(3){transform:rotateY(103deg) translateZ(min(38vw,520px))}
+.ring a:nth-child(4){transform:rotateY(154deg) translateZ(min(38vw,520px))}
+.ring a:nth-child(5){transform:rotateY(206deg) translateZ(min(38vw,520px))}
+.ring a:nth-child(6){transform:rotateY(257deg) translateZ(min(38vw,520px))}
+.ring a:nth-child(7){transform:rotateY(309deg) translateZ(min(38vw,520px))}
+.ring:hover .spin{animation-play-state:paused}
+@keyframes orbit{from{transform:rotateX(-8deg) rotateY(0)}to{transform:rotateX(-8deg) rotateY(-360deg)}}
+.hero .intro{position:absolute;z-index:5;left:var(--edge);bottom:12vh;max-width:300px;color:var(--muted)}
+.hero .intro p{margin-bottom:18px}
+.acts{display:flex;gap:16px;flex-wrap:wrap}
+.br{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;color:var(--ink);transition:transform .2s}
+.br::before{content:"[\00a0"}.br::after{content:"\00a0]"}
+.br:hover{transform:translateY(-2px)}
+.br:active{transform:scale(.97)}
+.ticker{position:absolute;z-index:5;left:0;right:0;bottom:0;border-top:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:12px 0;color:var(--muted)}
+.ticker{text-transform:none;text-align:center;font-size:13px;letter-spacing:.02em}.ticker div{display:inline-block}
+@keyframes tick{to{transform:translateX(-50%)}}
+.pause{position:absolute;z-index:6;right:var(--edge);bottom:52px;background:none;border:1px solid var(--line);color:var(--muted);min-height:36px;padding:0 12px;cursor:pointer}
+.paused .ring .spin{animation-play-state:paused}
+[data-enter]>*{opacity:0;transform:translateY(24px);animation:up 1s cubic-bezier(.2,.7,.2,1) forwards}
+[data-enter]>*:nth-child(2){animation-delay:.12s}[data-enter]>*:nth-child(3){animation-delay:.24s}
+@keyframes up{to{opacity:1;transform:none}}
+
+section{padding:clamp(90px,13vh,150px) 0}
+.sel .head{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:40px;align-items:end}
+.sel h2{font:800 clamp(34px,4vw,60px)/.95 "Bricolage Grotesque";font-stretch:75%;text-transform:uppercase;letter-spacing:-.02em}
+.sel .head p{color:var(--muted);max-width:44ch;justify-self:end}
+.table{border-top:1px solid var(--line)}
+.table a{display:grid;grid-template-columns:60px 1.3fr 2fr 1.2fr 110px;gap:20px;align-items:center;padding:20px 0;border-bottom:1px solid var(--line);position:relative;transition:background .25s,padding .25s}
+.table a:hover{background:var(--bg-2);padding-left:12px}
+.table .t{font:700 22px/1.1 "Bricolage Grotesque";font-stretch:85%;text-transform:uppercase}
+.table .d{color:var(--muted);font-size:15px}
+.table .th{height:64px;overflow:hidden}
+.table .th img{filter:grayscale(1);transition:filter .4s,transform .6s}
+.table a:hover .th img{filter:none;transform:scale(1.03)}
+.hdr{display:grid;grid-template-columns:60px 1.3fr 2fr 1.2fr 110px;gap:20px;padding:0 0 12px;color:var(--dim)}
+
+.statement{background:var(--bg-2);min-height:90vh;display:flex;align-items:center}
+.statement p.big{font:800 clamp(30px,4.4vw,66px)/1.02 "Bricolage Grotesque";font-stretch:75%;letter-spacing:-.02em;text-align:center;max-width:22ch;margin:0 auto}
+.statement p.big span{color:var(--dim)}
+.jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:72px;border-top:1px solid var(--line);padding-top:32px}
+.jobs h3{font:700 20px/1.2 "Bricolage Grotesque";text-transform:uppercase;font-stretch:85%;margin:8px 0 8px}
+.jobs p{color:var(--muted);font-size:15px}
+
+.contact{min-height:85vh;display:flex;align-items:flex-end;padding-bottom:56px}
+.contact h2{font:800 clamp(56px,11vw,180px)/.86 "Bricolage Grotesque";font-stretch:75%;text-transform:uppercase;letter-spacing:-.035em}
+.contact .low{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:20px;margin-top:48px;border-top:1px solid var(--line);padding-top:22px}
+.contact .low a{display:inline-flex;min-height:44px;align-items:center;transition:transform .2s}
+.contact .low a:hover{transform:translateX(4px)}
+footer{border-top:1px solid var(--line);padding:20px 0;color:var(--dim)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+@media (max-width:900px){
+  .nav ul{display:none}
+  .hero h1{top:16vh}
+  .portrait{width:62vw;transform:translateX(-40%)}
+  .ring{top:70%}
+  .ring a{width:110px;height:78px;left:-55px;top:-39px}
+  .hero .intro{bottom:9vh;max-width:240px}
+  .sel .head{grid-template-columns:1fr}.sel .head p{justify-self:start}
+  .table a,.hdr{grid-template-columns:40px 1fr 90px}
+  .table .d,.table .e,.hdr .d,.hdr .e{display:none}
+  .jobs,.contact .low{grid-template-columns:1fr 1fr}
+}
+@media (max-width:520px){.jobs,.contact .low{grid-template-columns:1fr}.ring{display:none}.nav .wrap{grid-template-columns:1fr auto}
+  .hero{display:flex;flex-direction:column;padding:110px 0 70px!important}
+  .hero h1{position:static;margin:0 var(--edge)}
+  .hero h1 span:nth-child(2){padding-left:12vw}
+  .portrait{position:relative;left:auto;transform:none;width:calc(100% - 2*var(--edge));margin:32px auto 0;aspect-ratio:4/3;mask-image:none}
+  .portrait img{object-position:50% 80%}
+  .hero .intro{position:static;margin:28px var(--edge) 0;max-width:none}
+  .pause{bottom:52px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}[data-enter]>*{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<!-- Draft 5 · "Mono" — after the Dribbble EM shot (grey monochrome, staggered uppercase, ring of work around a central figure, index table). Photos: Unsplash stand-ins. -->
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav"><div class="wrap">
+  <a class="mark" href="#">eric chen</a>
+  <ul class="mono"><li><a class="l" href="#builds">Builds</a></li><li><a class="l" href="#work">Work</a></li><li><a class="l" href="#contact">Contact</a></li></ul>
+  <a class="mono r br" href="mailto:cloudec.11@gmail.com">Email</a>
+</div></header>
+
+<main id="main">
+<section class="hero" id="hero" style="padding:0">
+  <h1 data-enter><span>Agents that</span><span>show their</span><span>work.</span></h1>
+  <div class="portrait"><img src="https://images.unsplash.com/photo-1533240332313-0db49b459ad6?w=1000&q=75&auto=format&fit=crop" alt="A hiker standing above a mountain valley and river"></div>
+  <div class="ring" aria-label="Projects">
+    <div class="spin">
+      <a href="https://devpost.com/software/temp-project-0sp3zv" aria-label="Signal"><img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=320&q=70&auto=format&fit=crop" alt=""></a>
+      <a href="https://findmyseathackwestern.vercel.app" aria-label="FindMySeat"><img src="https://images.unsplash.com/photo-1631553127988-36343ac5bb0c?w=320&q=70&auto=format&fit=crop" alt=""></a>
+      <a href="https://dorahacks.io/buidl/13396" aria-label="Grip Guardian"><img src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=320&q=70&auto=format&fit=crop" alt=""></a>
+      <a href="https://devpost.com/software/guidebot" aria-label="GuideBot"><img src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=320&q=70&auto=format&fit=crop" alt=""></a>
+      <a href="https://devpost.com/software/temp-rft3ge" aria-label="IWitness"><img src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=320&q=70&auto=format&fit=crop" alt=""></a>
+      <a href="https://github.com/cloudec11" aria-label="GitHub"><img src="https://images.unsplash.com/photo-1527008817915-2bc1307a928a?w=320&q=70&auto=format&fit=crop" alt=""></a>
+      <a href="https://www.linkedin.com/in/eric-chen11" aria-label="LinkedIn"><img src="https://images.unsplash.com/photo-1446034295857-c39f8844fad4?w=320&q=70&auto=format&fit=crop" alt=""></a>
+    </div>
+  </div>
+  <div class="intro" data-enter>
+    <p>Eric Chen. CS at Western University. LLM agents, retrieval systems and full-stack apps. Open to a Fall 2027 co-op.</p>
+    <div class="acts mono"><a class="br" href="#builds">See builds</a><a class="br" href="mailto:cloudec.11@gmail.com">Email Eric</a></div>
+  </div>
+  <button class="pause mono" type="button" aria-pressed="false" onclick="const p=document.getElementById('hero').classList.toggle('paused');this.setAttribute('aria-pressed',p);this.textContent=p?'Play':'Pause'">Pause</button>
+  <div class="ticker mono"><div>Hack the North 2026 · 1st RBC prize ✦ JAMHacks 8 · Best Dev Tool ✦ Hack the 6ix · MLH Best Accessibility ✦ YRHacks · 2nd overall</div></div>
+</section>
+
+<section class="sel" id="builds">
+  <div class="wrap">
+    <div class="head"><h2>A selection of<br>recent builds</h2><p>Hackathon projects from 2023 to 2026, built with teams of two to four.</p></div>
+    <div class="hdr mono"><span>No.</span><span>Project</span><span class="d">What it does</span><span class="e">Event</span><span></span></div>
+    <div class="table">
+      <a href="https://devpost.com/software/temp-project-0sp3zv"><span class="mono">01</span><span class="t">Signal</span><span class="d">Multi-agent financial research with line-level citations</span><span class="e mono">HTN 2026 · Winner</span><span class="th"><img loading="lazy" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=240&q=70&auto=format&fit=crop" alt=""></span></a>
+      <a href="https://findmyseathackwestern.vercel.app"><span class="mono">02</span><span class="t">FindMySeat</span><span class="d">Pi sensors stream seat occupancy to a live dashboard</span><span class="e mono">Hack Western 12</span><span class="th"><img loading="lazy" src="https://images.unsplash.com/photo-1631553127988-36343ac5bb0c?w=240&q=70&auto=format&fit=crop" alt=""></span></a>
+      <a href="https://dorahacks.io/buidl/13396"><span class="mono">03</span><span class="t">Grip Guardian</span><span class="d">Sensor mouse that flags hand strain in real time</span><span class="e mono">JAMHacks 8 · Best Dev Tool</span><span class="th"><img loading="lazy" src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=240&q=70&auto=format&fit=crop" alt=""></span></a>
+      <a href="https://devpost.com/software/guidebot"><span class="mono">04</span><span class="t">GuideBot</span><span class="d">ESP32 robot that names nearby objects for blind users</span><span class="e mono">HT6 2023 · MLH Accessibility</span><span class="th"><img loading="lazy" src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=240&q=70&auto=format&fit=crop" alt=""></span></a>
+      <a href="https://devpost.com/software/temp-rft3ge"><span class="mono">05</span><span class="t">IWitness</span><span class="d">City camera feeds that flag crimes and emergencies</span><span class="e mono">YRHacks 2023 · 2nd overall</span><span class="th"><img loading="lazy" src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=240&q=70&auto=format&fit=crop" alt=""></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="statement" id="work">
+  <div class="wrap">
+    <p class="big">An answer should cite its source. <span>When the data is missing, the tool should say so instead of guessing.</span></p>
+    <div class="jobs">
+      <div><span class="mono" style="color:var(--muted)">Summer 2026</span><h3>Korah Limited</h3><p>Software Developer Intern. LLM receptionist kiosk, Alexa voice interface, Python on AWS Lambda.</p></div>
+      <div><span class="mono" style="color:var(--muted)">Summer 2026</span><h3>Autumn Co</h3><p>Software Engineer Intern. Python web scraping, frontend QA and refactoring.</p></div>
+      <div><span class="mono" style="color:var(--muted)">Winter 2023</span><h3>bizZone</h3><p>Software Developer Co-op. APIs, frontend QA and web development.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Hiring for<br>Fall 2027?</h2>
+    <div class="low mono">
+      <a href="mailto:cloudec.11@gmail.com">[ Email ]</a>
+      <a href="https://www.linkedin.com/in/eric-chen11">[ LinkedIn ↗ ]</a>
+      <a href="https://github.com/cloudec11">[ GitHub ↗ ]</a>
+      <a href="https://devpost.com/cloudec-11">[ Devpost ↗ ]</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="mono"><div class="wrap"><span>© 2026 Eric Chen</span><span>Photographs: Unsplash</span></div></footer>
+</body>
+</html>

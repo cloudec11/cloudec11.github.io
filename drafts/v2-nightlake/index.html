@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eric Chen — Software &amp; AI</title>
+<meta name="description" content="Eric Chen, Computer Science student at Western University. Full-stack apps, LLM agents and hackathon hardware.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090a;--panel:#101415;--ink:#f2f4f3;--muted:#a3adab;--accent:#79d4c9;--line:rgba(242,244,243,.12);--edge:clamp(20px,5vw,80px);--max:1280px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 Lora,Georgia,serif;-webkit-font-smoothing:antialiased}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(var(--max),100% - 2*var(--edge));margin-inline:auto}
+.sans{font-family:Archivo,system-ui,sans-serif}
+.skip{position:absolute;left:-999px;top:8px;background:var(--accent);color:#000;padding:8px 14px;z-index:99}.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.nav{position:fixed;inset:0 0 auto;z-index:20;background:linear-gradient(180deg,rgba(7,9,10,.8),transparent)}
+.nav .wrap{display:flex;justify-content:space-between;align-items:center;height:76px}
+.mark{font:800 18px/1 Archivo;font-stretch:125%;letter-spacing:.02em}
+.nav ul{display:flex;gap:34px;list-style:none;font:600 12px/1 Archivo;letter-spacing:.18em;text-transform:uppercase}
+.nav a{display:inline-block;padding:16px 0;position:relative}
+.nav a::after{content:"";position:absolute;left:0;right:100%;bottom:10px;height:1px;background:var(--accent);transition:right .3s}
+.nav a:hover::after{right:0}
+
+.hero{position:relative;height:100svh;min-height:640px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.hero .bg{position:absolute;inset:0;z-index:-1}
+.hero .bg img{object-position:50% 60%;filter:saturate(.85)}
+.hero .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,9,10,.85) 0%,rgba(7,9,10,.2) 60%),linear-gradient(0deg,var(--bg) 0%,transparent 45%)}
+.hero h1{font:800 clamp(52px,8.4vw,128px)/.92 Archivo;font-stretch:125%;text-transform:uppercase;color:var(--accent);letter-spacing:-.01em}
+.hero p.lede{max-width:44ch;margin:24px 0 0;font-size:18px;color:#d6dcda}
+.hero .top{padding-bottom:56px}
+.index{position:absolute;right:var(--edge);top:50%;transform:translateY(-50%);list-style:none;font:600 12px/1 Archivo;letter-spacing:.1em;text-align:right}
+.index a{display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:10px 0;color:var(--muted);transition:color .25s}
+.index a::after{content:"";width:16px;height:1px;background:currentColor;transition:width .3s}
+.index a:hover,.index a.on{color:var(--ink)}
+.index a:hover::after,.index a.on::after{width:56px}
+.strip{border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:40px;padding:28px 0 36px}
+.strip div{display:grid;grid-template-columns:40px 1fr;gap:14px;font-size:14px;color:var(--muted)}
+.strip svg{width:32px;height:32px;stroke:var(--accent);fill:none;stroke-width:1.4}
+.strip b{display:block;color:var(--ink);font:700 12px/1.4 Archivo;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+[data-enter]>*{opacity:0;transform:translateY(24px);animation:up 1s cubic-bezier(.2,.7,.2,1) forwards}
+[data-enter]>*:nth-child(2){animation-delay:.15s}[data-enter]>*:nth-child(3){animation-delay:.3s}
+@keyframes up{to{opacity:1;transform:none}}
+
+section{padding:clamp(90px,14vh,150px) 0}
+.head{text-align:center;margin-bottom:56px}
+.head h2{font:700 clamp(18px,1.6vw,22px)/1 Archivo;font-stretch:125%;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.head p{color:var(--muted);margin-top:14px;font-style:italic}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+.tile{position:relative;aspect-ratio:3/5;border-radius:10px;overflow:hidden;background:var(--panel);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;outline:1px solid var(--line)}
+.tile img{transition:transform .8s cubic-bezier(.2,.7,.2,1);filter:brightness(.8)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,9,10,.95) 8%,transparent 55%)}
+.tile .txt{position:absolute;left:18px;right:18px;bottom:18px;z-index:1}
+.tile h3{font:800 17px/1.15 Archivo;font-stretch:115%;text-transform:uppercase;letter-spacing:.04em}
+.tile .ev{display:block;font-size:13px;color:var(--muted);margin-top:6px}
+.tile .aw{display:inline-block;margin-top:10px;font:700 11px/1 Archivo;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.tile:hover{transform:translateY(-2px);box-shadow:0 24px 40px -24px rgba(0,0,0,.9)}
+.tile:hover img{transform:scale(1.03)}
+
+.band{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+.band .bg{position:absolute;inset:0;z-index:-1}
+.band .bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,9,10,.92) 0%,rgba(7,9,10,.65) 55%,rgba(7,9,10,.35) 100%),linear-gradient(180deg,var(--bg),transparent 20%,transparent 80%,var(--bg))}
+.band h2{font:800 clamp(44px,6vw,92px)/.95 Archivo;font-stretch:125%;text-transform:uppercase;color:var(--accent);max-width:10ch}
+.jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px}
+.jobs article{border-left:1px solid var(--accent);padding-left:20px}
+.jobs h3{font:700 15px/1.3 Archivo;letter-spacing:.06em;text-transform:uppercase}
+.jobs .w{display:block;font-size:13px;color:var(--accent);margin:4px 0 10px;font-style:italic}
+.jobs p{font-size:15px;color:#cfd6d4}
+.tools{margin-top:48px;font:500 13px/1.9 Archivo;letter-spacing:.03em;color:var(--muted);max-width:70ch}
+
+.contact{text-align:center;min-height:80vh;display:flex;align-items:center}
+.contact h2{font:800 clamp(40px,6vw,96px)/.95 Archivo;font-stretch:125%;text-transform:uppercase}
+.contact h2 em{font:italic 400 1em/1 Lora;text-transform:none;color:var(--accent)}
+.contact p{color:var(--muted);margin:22px auto 34px;max-width:48ch}
+.btn{display:inline-flex;align-items:center;gap:12px;min-height:52px;padding:0 30px;border:1px solid var(--accent);color:var(--accent);font:700 12px/1 Archivo;letter-spacing:.2em;text-transform:uppercase;border-radius:2px;transition:background .25s,color .25s,transform .2s}
+.btn:hover{background:var(--accent);color:#04100e;transform:translateY(-2px)}
+.btn:active{transform:scale(.98)}
+.btn.solid{background:var(--accent);color:#04100e}
+.row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:24px 0;font:500 12px/1.4 Archivo;letter-spacing:.02em;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+@media (max-width:1000px){.tiles{grid-template-columns:repeat(2,1fr)}.tile:last-child{grid-column:span 2;aspect-ratio:16/9}.index{display:none}}
+@media (max-width:760px){.nav ul li:not(:last-child){display:none}.hero h1{font-size:clamp(40px,12vw,64px);font-stretch:100%}.strip,.jobs{grid-template-columns:1fr;gap:20px}.tiles{grid-template-columns:1fr}.tile,.tile:last-child{aspect-ratio:4/3;grid-column:auto}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}[data-enter]>*{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<!-- Draft 2 · "Night Lake" — after reference 2 (near-black, teal accent, wide uppercase, side index, tall photo tiles). Photos: Unsplash stand-ins. -->
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav"><div class="wrap">
+  <a class="mark" href="#">ERIC CHEN</a>
+  <ul><li><a href="#builds">Builds</a></li><li><a href="#work">Work</a></li><li><a href="#contact">Contact</a></li></ul>
+</div></header>
+
+<main id="main">
+<section class="hero" style="padding:0">
+  <div class="bg"><img src="https://images.unsplash.com/photo-1568454537842-d933259bb258?w=2200&q=75&auto=format&fit=crop" alt="A person standing on a rock looking out over a lake"></div>
+  <ol class="index">
+    <li><a class="on" href="#main">01 · Intro</a></li>
+    <li><a href="#builds">02 · Builds</a></li>
+    <li><a href="#work">03 · Work</a></li>
+    <li><a href="#contact">04 · Contact</a></li>
+  </ol>
+  <div class="wrap">
+    <div class="top" data-enter>
+      <h1>Software<br>&amp; AI, built<br>fast.</h1>
+      <p class="lede">I'm Eric, a Computer Science student at Western University. I build LLM agents, retrieval systems and full-stack apps, and I'm looking for a Fall 2027 co-op.</p>
+    </div>
+    <div class="strip">
+      <div><svg viewBox="0 0 32 32"><path d="M16 3l3.6 7.6 8.4 1-6.2 5.8 1.6 8.3L16 21.6 8.6 25.7l1.6-8.3L4 11.6l8.4-1z"/></svg><span><b>1st · RBC prize</b>Signal won at Hack the North 2026.</span></div>
+      <div><svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="16" rx="2"/><path d="M11 27h10M16 22v5"/></svg><span><b>Two internships</b>Korah and Autumn Co, summer 2026.</span></div>
+      <div><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="11"/><path d="M16 9v7l5 3"/></svg><span><b>Five hackathon awards</b>From JAMHacks to Hack the 6ix.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="builds">
+  <div class="wrap">
+    <div class="head"><h2>Hackathon builds</h2><p>Weekend builds with teams of two to four, each with a working demo.</p></div>
+    <div class="tiles">
+      <a class="tile" href="https://devpost.com/software/temp-project-0sp3zv"><img loading="lazy" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=700&q=75&auto=format&fit=crop" alt="Stock chart on a dark screen"><div class="txt"><h3>Signal</h3><span class="ev">Cited answers for financial research</span><span class="aw">Winner · HTN 2026</span></div></a>
+      <a class="tile" href="https://findmyseathackwestern.vercel.app"><img loading="lazy" src="https://images.unsplash.com/photo-1631553127988-36343ac5bb0c?w=700&q=75&auto=format&fit=crop" alt="Raspberry Pi board"><div class="txt"><h3>FindMySeat</h3><span class="ev">Live seat counts from Pi sensors</span><span class="aw">Hack Western 12</span></div></a>
+      <a class="tile" href="https://dorahacks.io/buidl/13396"><img loading="lazy" src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=700&q=75&auto=format&fit=crop" alt="A black computer mouse on a black surface"><div class="txt"><h3>Grip Guardian</h3><span class="ev">A mouse that flags hand strain</span><span class="aw">Best Dev Tool · JAMHacks 8</span></div></a>
+      <a class="tile" href="https://devpost.com/software/guidebot"><img loading="lazy" src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=700&q=75&auto=format&fit=crop" alt="Circuit boards laid out flat"><div class="txt"><h3>GuideBot</h3><span class="ev">A robot that names what's nearby</span><span class="aw">MLH Accessibility · HT6</span></div></a>
+      <a class="tile" href="https://devpost.com/software/temp-rft3ge"><img loading="lazy" src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=900&q=75&auto=format&fit=crop" alt="Aerial view of a city at night"><div class="txt"><h3>IWitness</h3><span class="ev">Camera feeds that flag emergencies</span><span class="aw">2nd overall · YRHacks</span></div></a>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="work">
+  <div class="bg"><img loading="lazy" src="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?w=2200&q=75&auto=format&fit=crop" alt="Fog rising through tall trees seen from above"></div>
+  <div class="wrap">
+    <h2>Where I've shipped</h2>
+    <div class="jobs">
+      <article><h3>Korah Limited</h3><span class="w">Software Developer Intern · Summer 2026</span><p>An LLM receptionist kiosk with an Alexa voice interface, on Python services in AWS Lambda.</p></article>
+      <article><h3>Autumn Co</h3><span class="w">Software Engineer Intern · Summer 2026</span><p>Python web scraping, frontend QA and refactoring.</p></article>
+      <article><h3>bizZone</h3><span class="w">Software Developer Co-op · Winter 2023</span><p>APIs, frontend QA and web development.</p></article>
+    </div>
+    <p class="tools">PYTHON · JAVASCRIPT · JAVA · C++ · REACT · NEXT.JS · FASTAPI · FLASK · AWS LAMBDA · DOCKER · ELASTICSEARCH · MONGODB · MCP</p>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Open for a <em>Fall 2027</em> co-op</h2>
+    <p>The fastest way to reach me is email.</p>
+    <div class="row">
+      <a class="btn solid" href="mailto:cloudec.11@gmail.com">Email Eric</a>
+      <a class="btn" href="https://www.linkedin.com/in/eric-chen11">Open LinkedIn</a>
+      <a class="btn" href="https://github.com/cloudec11">Open GitHub</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><span>© 2026 Eric Chen</span><span>Photographs: Unsplash</span></div></footer>
+</body>
+</html>

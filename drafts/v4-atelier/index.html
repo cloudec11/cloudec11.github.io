@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eric Chen — Software &amp; AI</title>
+<meta name="description" content="Eric Chen, Computer Science student at Western University. Full-stack apps, LLM agents and hackathon hardware.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#efe8dc;--cream-2:#e6ddce;--ink:#151311;--soft:#5e564c;--gold:#7a5f30;--gold-l:#c8a46a;--line:rgba(21,19,17,.16);--edge:clamp(20px,5vw,72px);--max:1240px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font:300 16px/1.7 Jost,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{display:block;width:100%;height:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(var(--max),100% - 2*var(--edge));margin-inline:auto}
+.serif{font-family:"Bodoni Moda",serif}
+.k{font:500 11px/1.4 Jost;letter-spacing:.32em;text-transform:uppercase}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--cream);padding:8px 14px;z-index:99}.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+.nav .wrap{display:flex;justify-content:space-between;align-items:center;height:76px;border-bottom:1px solid var(--line)}
+.nav ul{display:flex;gap:32px;list-style:none}
+.nav a{display:inline-block;padding:12px 0;background:linear-gradient(currentColor,currentColor) 0 85%/0 1px no-repeat;transition:background-size .3s}
+.nav a:hover{background-size:100% 1px}
+
+.hero{min-height:calc(100svh - 76px);display:flex;flex-direction:column;overflow:hidden}
+.hero .name{font:400 clamp(72px,16.4vw,250px)/.82 "Bodoni Moda",serif;letter-spacing:-.035em;text-transform:uppercase;white-space:nowrap;margin-top:3vh;text-align:center}
+.hero .row{flex:1;display:grid;grid-template-columns:1fr 1.05fr 1fr;gap:clamp(20px,4vw,56px);align-items:center;padding:4vh 0 5vh}
+.hero h1{font:400 clamp(26px,2.5vw,36px)/1.25 Jost;letter-spacing:.06em;text-transform:uppercase;margin:16px 0 22px;font-weight:400}
+.rule{width:56px;height:1px;background:var(--gold);margin-bottom:22px}
+.hero p{color:var(--soft);max-width:34ch}
+.arch{aspect-ratio:4/5;border-radius:999px 999px 0 0;overflow:hidden;position:relative}
+.arch img{object-position:50% 30%;transform:scale(1.08);animation:settle 2.2s cubic-bezier(.2,.7,.2,1) forwards}
+.side{display:flex;flex-direction:column;justify-content:space-between;height:100%;align-items:flex-end;text-align:right}
+.badge{width:150px;height:150px;position:relative}
+.badge svg{width:100%;height:100%;animation:spin 28s linear infinite}
+.badge b{position:absolute;inset:0;display:grid;place-items:center;font:400 40px/1 "Bodoni Moda";color:var(--gold)}
+.fact .serif{font-size:44px;line-height:1;display:block;color:var(--gold)}
+.fact span{color:var(--soft);font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:12px;min-height:50px;padding:0 28px;background:var(--ink);color:var(--cream);font:500 12px/1 Jost;letter-spacing:.24em;text-transform:uppercase;transition:transform .2s,background .2s}
+.btn:hover{transform:translateY(-2px);background:#000}
+.btn:active{transform:scale(.98)}
+[data-enter]>*{opacity:0;transform:translateY(16px);animation:up 1s cubic-bezier(.2,.7,.2,1) forwards}
+[data-enter]>*:nth-child(2){animation-delay:.15s}[data-enter]>*:nth-child(3){animation-delay:.3s}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes settle{to{transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+section{padding:clamp(80px,12vh,130px) 0}
+.works{background:var(--ink);color:var(--cream)}
+.works .top{display:flex;align-items:center;gap:24px;margin-bottom:48px}
+.works .top .k{color:var(--gold-l)}
+.works .top i{flex:1;height:1px;background:rgba(239,232,220,.2)}
+.works h2{font:400 clamp(38px,4.2vw,62px)/1.05 "Bodoni Moda";margin-bottom:48px;max-width:18ch}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.w{display:block;transition:transform .3s}
+.w:hover{transform:translateY(-2px)}
+.w .ph{aspect-ratio:3/4;overflow:hidden;border:1px solid rgba(239,232,220,.18);padding:10px}
+.w .ph div{width:100%;height:100%;overflow:hidden}
+.w img{transition:transform .8s cubic-bezier(.2,.7,.2,1);filter:sepia(.18) saturate(.8)}
+.w:hover img{transform:scale(1.03)}
+.w h3{font:400 22px/1.2 "Bodoni Moda";margin-top:18px;text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.w .m{display:block;text-align:center;font:400 11px/1.6 Jost;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-l);margin-top:6px}
+.w p{text-align:center;color:#c7bfb2;font-size:14px;margin-top:8px}
+
+.exp .grid{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:clamp(24px,4vw,64px);align-items:start}
+.exp h2{font:400 clamp(34px,3.4vw,50px)/1.1 "Bodoni Moda";margin:16px 0 22px}
+.list{list-style:none}
+.list li{display:grid;grid-template-columns:64px 1fr;gap:12px;padding:20px 0;border-bottom:1px solid var(--line)}
+.list li:first-child{padding-top:0}
+.list .n{font:400 34px/1 "Bodoni Moda";color:var(--gold)}
+.list h3{font:500 13px/1.4 Jost;letter-spacing:.2em;text-transform:uppercase}
+.list .d{color:var(--soft);font-size:13px;display:block;margin-bottom:6px}
+.list p{color:var(--soft);font-size:15px}
+.skills h3{font:500 11px/1 Jost;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+.skills p{color:var(--soft);margin-bottom:26px}
+.quote{aspect-ratio:3/4;position:relative;overflow:hidden}
+.quote::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(21,19,17,.7),transparent 55%)}
+.quote blockquote{position:absolute;left:24px;right:24px;bottom:24px;z-index:1;color:var(--cream);font:400 20px/1.35 "Bodoni Moda";text-transform:uppercase;letter-spacing:.04em}
+
+.foot{background:var(--ink);color:var(--cream);padding:clamp(70px,10vh,110px) 0 40px}
+.foot .grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:48px}
+.foot h2{font:400 clamp(36px,4vw,58px)/1.08 "Bodoni Moda";color:var(--gold-l);text-transform:uppercase}
+.foot .k{color:var(--gold-l);margin-bottom:18px;display:block}
+.foot ul{list-style:none}
+.foot li a{display:inline-block;padding:7px 0;color:#d7cfc2;transition:color .2s}
+.foot li a:hover{color:#fff}
+.foot .base{margin-top:72px;padding-top:22px;border-top:1px solid rgba(239,232,220,.16);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:#a69e91}
+
+@media (max-width:980px){
+  .hero .row{grid-template-columns:1fr 1fr}
+  .side{grid-column:1/-1;flex-direction:row;align-items:center;text-align:left}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .exp .grid{grid-template-columns:1fr 1fr}.quote{grid-column:1/-1;aspect-ratio:16/9}
+  .foot .grid{grid-template-columns:1fr 1fr}.foot .grid>div:first-child{grid-column:1/-1}
+}
+@media (max-width:640px){
+  .hero .name{white-space:normal;font-size:clamp(64px,22vw,120px);text-align:left}
+  .hero .row,.exp .grid,.foot .grid{grid-template-columns:1fr}
+  .side{flex-direction:column;align-items:flex-start;gap:24px}
+  .cards{grid-template-columns:1fr}
+  .nav ul li:not(:last-child){display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}[data-enter]>*{opacity:1;transform:none}.arch img{transform:none}}
+</style>
+</head>
+<body>
+<!-- Draft 4 · "Atelier" — after reference 4 (cream and black, huge serif name, gold accents, works band, numbered list). Photos: Unsplash stand-ins. -->
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav"><div class="wrap">
+  <a class="k" href="#">EC · Portfolio</a>
+  <ul class="k"><li><a href="#works">Works</a></li><li><a href="#experience">Experience</a></li><li><a href="#contact">Contact</a></li></ul>
+</div></header>
+
+<main id="main">
+<section class="hero" style="padding:0">
+  <div class="wrap name" aria-hidden="true">Eric Chen</div>
+  <div class="wrap row">
+    <div data-enter>
+      <span class="k" style="color:var(--gold)">Computer Science · Western</span>
+      <h1>Software developer<br>for AI tools &amp;<br>full-stack apps</h1>
+      <div class="rule"></div>
+      <p>I build LLM agents, retrieval systems and the apps around them. Looking for a Fall 2027 co-op.</p>
+    </div>
+    <div class="arch"><img src="https://images.unsplash.com/photo-1586022045497-31fcf76fa6cc?w=1200&q=75&auto=format&fit=crop" alt="A hiker with a large pack on a rocky peak at golden hour"></div>
+    <div class="side" data-enter>
+      <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 150 150"><defs><path id="c" d="M75,75 m-58,0 a58,58 0 1,1 116,0 a58,58 0 1,1 -116,0"/></defs><text font-family="Jost" font-size="11.5" letter-spacing="4.2" fill="#151311"><textPath href="#c">BUILDING · SHIPPING · LEARNING · BUILDING ·</textPath></text></svg>
+        <b>E</b>
+      </div>
+      <div class="fact"><span class="serif">1st</span><span>RBC prize, Hack the North 2026</span></div>
+      <a class="btn" href="mailto:cloudec.11@gmail.com">Email Eric</a>
+    </div>
+  </div>
+</section>
+
+<section class="works" id="works">
+  <div class="wrap">
+    <div class="top"><span class="k">Selected works</span><i></i><a class="k" href="https://devpost.com/cloudec-11" style="color:var(--gold-l)">All on Devpost →</a></div>
+    <h2>Four hackathon builds, four awards.</h2>
+    <div class="cards">
+      <a class="w" href="https://devpost.com/software/temp-project-0sp3zv"><div class="ph"><div><img loading="lazy" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=700&q=75&auto=format&fit=crop" alt="Stock chart on a dark screen"></div></div><h3>Signal</h3><span class="m">Winner · Hack the North</span><p>Financial research agents that cite every line.</p></a>
+      <a class="w" href="https://devpost.com/software/guidebot"><div class="ph"><div><img loading="lazy" src="https://images.unsplash.com/photo-1555664424-778a1e5e1b48?w=700&q=75&auto=format&fit=crop" alt="Circuit boards laid out flat"></div></div><h3>GuideBot</h3><span class="m">MLH Accessibility · HT6</span><p>A robot that names nearby objects aloud.</p></a>
+      <a class="w" href="https://dorahacks.io/buidl/13396"><div class="ph"><div><img loading="lazy" src="https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=700&q=75&auto=format&fit=crop" alt="A black computer mouse"></div></div><h3>Grip Guardian</h3><span class="m">Best Dev Tool · JAMHacks</span><p>A sensor mouse that flags hand strain.</p></a>
+      <a class="w" href="https://devpost.com/software/temp-rft3ge"><div class="ph"><div><img loading="lazy" src="https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=700&q=75&auto=format&fit=crop" alt="City at night from above"></div></div><h3>IWitness</h3><span class="m">2nd overall · YRHacks</span><p>City cameras that flag emergencies.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="exp" id="experience">
+  <div class="wrap grid">
+    <div>
+      <span class="k" style="color:var(--gold)">Experience</span>
+      <h2>Internships so far</h2>
+      <div class="skills">
+        <h3>Languages</h3><p>Python, JavaScript, Java, C, C++, HTML/CSS</p>
+        <h3>Frameworks</h3><p>React, Next.js, Node.js, FastAPI, Flask</p>
+        <h3>Tools</h3><p>AWS Lambda, Docker, Elasticsearch, MongoDB, OpenAI API, MCP</p>
+      </div>
+    </div>
+    <ol class="list">
+      <li><span class="n">01</span><div><h3>Korah Limited</h3><span class="d">Software Developer Intern · Summer 2026</span><p>An LLM receptionist kiosk with an Alexa voice interface, on Python services in AWS Lambda.</p></div></li>
+      <li><span class="n">02</span><div><h3>Autumn Co</h3><span class="d">Software Engineer Intern · Summer 2026</span><p>Python web scraping, frontend QA and refactoring.</p></div></li>
+      <li><span class="n">03</span><div><h3>bizZone</h3><span class="d">Software Developer Co-op · Winter 2023</span><p>APIs, frontend QA and web development.</p></div></li>
+      <li><span class="n">04</span><div><h3>FindMySeat</h3><span class="d">Hack Western 12</span><p>Raspberry Pi sensors feeding a live Next.js dashboard. <a href="https://findmyseathackwestern.vercel.app" style="text-decoration:underline">Open the demo</a></p></div></li>
+    </ol>
+    <div class="quote"><img loading="lazy" src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=900&q=75&auto=format&fit=crop" alt="A person on a mountain summit beside a stone cairn"><blockquote>Answers should show their sources, or say they don't know.</blockquote></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="wrap">
+    <div class="grid">
+      <div><h2>Let's build something useful.</h2></div>
+      <div><span class="k">Get in touch</span><ul><li><a href="mailto:cloudec.11@gmail.com">cloudec.11@gmail.com</a></li><li><a href="https://www.linkedin.com/in/eric-chen11">LinkedIn</a></li></ul></div>
+      <div><span class="k">Elsewhere</span><ul><li><a href="https://github.com/cloudec11">GitHub</a></li><li><a href="https://devpost.com/cloudec-11">Devpost</a></li></ul></div>
+    </div>
+    <div class="base"><span>© 2026 Eric Chen</span><span>Photographs: Unsplash</span></div>
+  </div>
+</footer>
+</body>
+</html>

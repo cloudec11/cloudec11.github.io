@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio Drafts</title>
+<style>
+:root{--bg:#f4f3ef;--ink:#161616;--muted:#5d5d58;--line:#dcdad3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,sans-serif;padding:40px clamp(16px,4vw,48px)}
+h1{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:6px 0 30px;max-width:70ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.shot{position:relative;aspect-ratio:16/10;overflow:hidden;background:#ddd}
+.shot iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;transform-origin:0 0;pointer-events:none}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--line)}
+.meta b{font-size:16px}
+.meta span{color:var(--muted);font-size:13px;display:block}
+.meta a{flex:none;display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;background:var(--ink);color:#fff;text-decoration:none;font-weight:600;font-size:13px}
+.meta a:hover{background:#000}
+</style>
+</head>
+<body>
+<h1>Portfolio drafts: five directions</h1>
+<p class="sub">Each draft has the same content in a different style, one per reference. Pick the direction you like, then we make three variations of it.</p>
+<div class="grid">
+  <div class="card"><div class="shot"><iframe src="v1-summit/" title="Draft 1 Summit" loading="lazy" tabindex="-1"></iframe></div><div class="meta"><div><b>1 · Summit</b><span>Slate green, mountain hero, serif, numbered chapters</span></div><a href="v1-summit/">Open</a></div></div>
+  <div class="card"><div class="shot"><iframe src="v2-nightlake/" title="Draft 2 Night Lake" loading="lazy" tabindex="-1"></iframe></div><div class="meta"><div><b>2 · Night Lake</b><span>Near-black, teal, wide uppercase, tall photo tiles</span></div><a href="v2-nightlake/">Open</a></div></div>
+  <div class="card"><div class="shot"><iframe src="v3-ink/" title="Draft 3 Ink" loading="lazy" tabindex="-1"></iframe></div><div class="meta"><div><b>3 · Ink</b><span>Black and white, torn edges, amber blocks, collage</span></div><a href="v3-ink/">Open</a></div></div>
+  <div class="card"><div class="shot"><iframe src="v4-atelier/" title="Draft 4 Atelier" loading="lazy" tabindex="-1"></iframe></div><div class="meta"><div><b>4 · Atelier</b><span>Cream and black, giant serif name, gold details</span></div><a href="v4-atelier/">Open</a></div></div>
+  <div class="card"><div class="shot"><iframe src="v5-mono/" title="Draft 5 Mono" loading="lazy" tabindex="-1"></iframe></div><div class="meta"><div><b>5 · Mono</b><span>Grey monochrome, staggered type, orbiting project ring</span></div><a href="v5-mono/">Open</a></div></div>
+</div>
+<script>
+function fit(){document.querySelectorAll('.shot').forEach(s=>{s.querySelector('iframe').style.transform='scale('+(s.clientWidth/1440)+')'})}
+addEventListener('resize',fit);fit();
+</script>
+</body>
+</html>
