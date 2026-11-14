@@ -1,0 +1,4 @@
+# Agent skills (local only)
+.agents/
+.claude/
+skills-lock.json
