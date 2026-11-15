@@ -109,6 +109,51 @@
     read();
   }
 
+  // Projects expand into the same kind of display as Signal: steps beside a big screen
+  // that wipes between real screenshots. One open at a time. Works under reduced motion,
+  // which only drops the auto-advance.
+  const openers = new Map();
+  document.querySelectorAll('.proj').forEach((row) => {
+    const btn = row.querySelector('.proj-toggle'), panel = row.querySelector('.proj-case');
+    if (!btn || !panel) return;
+    const items = [...panel.querySelectorAll('.steps li')];
+    const frames = [...panel.querySelectorAll('.frame')];
+    let cur = 0, timer = 0;
+    const set = (i) => {
+      cur = i;
+      items.forEach((li, k) => { li.classList.toggle('on', k === i); li.classList.toggle('past', k < i); });
+      frames.forEach((f, k) => f.classList.toggle('on', k <= i));
+    };
+    const stop = () => { clearInterval(timer); timer = 0; };
+    const play = () => { stop(); if (!still && items.length > 1) timer = setInterval(() => set((cur + 1) % items.length), 3600); };
+    const warm = () => frames.forEach((f) => { if (f.tagName === 'IMG') f.loading = 'eager'; });
+    items.forEach((li, k) => li.querySelector('.pc-step')?.addEventListener('click', () => { set(k); stop(); }));
+    const open = (on) => {
+      row.classList.toggle('is-open', on);
+      btn.setAttribute('aria-expanded', String(on));
+      panel.inert = !on;
+      if (on) { warm(); set(0); play(); } else stop();
+    };
+    panel.inert = true;
+    openers.set(row, open);
+    row.addEventListener('pointerenter', warm, { once: true });
+    // Fetch the row's hidden frames (aperture shots and panel screens) before they are needed
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e], o) => {
+        if (!e.isIntersecting) return;
+        warm();
+        row.querySelectorAll('.thumb-in > img').forEach((img) => { img.loading = 'eager'; });
+        o.disconnect();
+      }, { rootMargin: '300px 0px' }).observe(row);
+    }
+    btn.addEventListener('click', () => {
+      const on = !row.classList.contains('is-open');
+      openers.forEach((fn, r) => { if (r !== row && r.classList.contains('is-open')) fn(false); });
+      open(on);
+      if (on) setTimeout(() => row.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' }), 80);
+    });
+  });
+
   // 2. Demo videos: inline in Signal's screen, in a dialog for other projects.
   const embed = (id, title) => {
     const f = document.createElement('iframe');
@@ -160,12 +205,35 @@
     const frames = [...kase.querySelectorAll('.frame')];
     const frameFor = [0, 1, 1, 2];
     const stage = kase.querySelector('.case-stage');
-    // Line numbers that scroll in the gutter behind the pinned stage. The cited lines are gold.
+    // Very faint code scrolls behind the pinned stage. Starts somewhere new each load.
     const log = kase.querySelector('.case-log');
     if (log) {
-      const cited = new Set([12, 18, 31, 47]);
+      const src = [
+        'from fastapi import FastAPI, Request', 'from elasticsearch import AsyncElasticsearch', '',
+        'app = FastAPI()', 'es = AsyncElasticsearch(ES_URL)', '',
+        'async def retrieve(query: str, k: int = 8):', '    body = {',
+        '        "query": {"match": {"text": query}},', '        "knn": {"field": "vec", "query_vector": embed(query), "k": k},',
+        '    }', '    hits = await es.search(index="filings", body=body)',
+        '    return [Line(h["_source"]) for h in hits["hits"]["hits"]]', '',
+        'async def verify(claims: list[Claim]) -> list[Flag]:', '    flags = []',
+        '    for a, b in pairs(claims):', '        if a.metric == b.metric and a.value != b.value:',
+        '            flags.append(Flag("conflict", a.cite, b.cite))', '    for gap in missing(claims):',
+        '        flags.append(Flag("missing", gap))', '    return flags', '',
+        '@app.post("/ask")', 'async def ask(req: Request):', '    q = (await req.json())["question"]',
+        '    plan = await planner.run(q)', '    lines = await retrieve(plan.query)',
+        '    draft = await writer.run(q, lines)', '    flags = await verify(draft.claims)',
+        '    return stream(trace(plan, lines, draft, flags))', '',
+        'def cite(line: Line) -> str:', '    return f"[{line.doc}:L{line.n}]"', '',
+        'async def load_dataset(url: str):', '    async with mcp.client(url) as c:',
+        '        rows = await c.call("fetch", {"url": url})', '    await index(rows)', '',
+      ];
+      const start = Math.floor(Math.random() * src.length);
+      const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
       let html = '';
-      for (let i = 1; i <= 80; i++) html += `<span${cited.has(i) ? ' class="cite"' : ''} data-n="${i * 4 + 364}"></span>`;
+      for (let i = 0; i < 90; i++) {
+        const code = esc(src[(start + i) % src.length]);
+        html += `<span data-n="${i + 1}">${code}</span>`;
+      }
       log.innerHTML = html;
     }
     const wantPin = matchMedia('(hover: hover) and (min-width: 1000px) and (min-height: 640px)');
@@ -213,71 +281,23 @@
     addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(mode, 150); }, { passive: true });
   }
 
-  // 5. Project previews: a docked column beside the list shows the hovered (or focused) row.
-  //    Rows with several screens cycle through them. Narrower or touch screens keep inline shots.
-  const peek = document.querySelector('.peek');
-  const rows = [...document.querySelectorAll('.proj[data-shots], .proj[data-card]')];
-  const wide = matchMedia('(hover: hover) and (min-width: 1100px)');
-  if (peek && rows.length) {
-    const sets = new Map();
-    let z = 1, active = null, cycle = 0, idx = 0;
-    rows.forEach((row) => {
-      const els = [];
-      if (row.dataset.card) {
-        const [big, small] = row.dataset.card.split('|');
-        const c = document.createElement('div');
-        c.className = 'card';
-        c.innerHTML = '<span></span><b></b>';
-        c.firstChild.textContent = small;
-        c.lastChild.textContent = big;
-        els.push(c);
-      } else {
-        row.dataset.shots.split(' ').forEach((src) => {
-          const img = new Image();
-          img.decoding = 'async';
-          img.alt = '';
-          img.src = src;
-          els.push(img);
-        });
-      }
-      els.forEach((el) => peek.append(el));
-      sets.set(row, els);
-    });
-    const reveal = (el) => {
-      peek.querySelectorAll('.on').forEach((o) => { if (o !== el) o.classList.remove('on'); });
-      el.style.zIndex = ++z;
-      el.classList.add('on');
+  // 5. Project apertures cycle their screenshots while the row is hovered or focused.
+  document.querySelectorAll('.proj').forEach((row) => {
+    const shots = [...row.querySelectorAll('.thumb-in > img')];
+    if (shots.length < 2) return;
+    let i = 0, t = 0, z = 1;
+    const show = (k) => {
+      i = k;
+      shots.forEach((el, n) => el.classList.toggle('on', n === k && k > 0));
+      if (k > 0) shots[k].style.zIndex = ++z;
     };
-    const stop = () => { clearInterval(cycle); cycle = 0; };
-    const select = (row) => {
-      if (row === active) return;
-      active?.classList.remove('is-active');
-      active = row;
-      row.classList.add('is-active');
-      const els = sets.get(row);
-      idx = 0;
-      reveal(els[0]);
-      stop();
-      if (els.length > 1) cycle = setInterval(() => { idx = (idx + 1) % els.length; reveal(els[idx]); }, 1700);
-    };
-    rows.forEach((row) => {
-      row.addEventListener('pointerenter', (e) => { if (wide.matches && e.pointerType !== 'touch') select(row); });
-      row.addEventListener('focusin', () => { if (wide.matches) select(row); });
-    });
-    // Leaving the list keeps the last preview on screen but stops it cycling.
-    document.querySelector('.projects')?.addEventListener('pointerleave', stop);
-    const mode = () => {
-      root.classList.toggle('peek-on', wide.matches);
-      if (wide.matches && !active) select(rows[0]);
-      if (!wide.matches) stop();
-    };
-    mode();
-    wide.addEventListener('change', mode);
-    new IntersectionObserver(([e], o) => {
-      if (e.isIntersecting) { peek.classList.add('in'); o.disconnect(); }
-    }, { rootMargin: '0px 0px -12% 0px' }).observe(peek.parentElement);
-    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
-  }
+    const start = () => { if (!pointer.matches || t) return; t = setInterval(() => show((i + 1) % shots.length), 1500); };
+    const stop = () => { clearInterval(t); t = 0; show(0); };
+    row.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') start(); });
+    row.addEventListener('pointerleave', stop);
+    row.addEventListener('focusin', start);
+    row.addEventListener('focusout', (e) => { if (!row.contains(e.relatedTarget)) stop(); });
+  });
 
   // 6. Buttons lean a few pixels toward the cursor.
   document.querySelectorAll('[data-magnet]').forEach((btn) => {

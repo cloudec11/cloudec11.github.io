@@ -103,69 +103,104 @@
     </article>
 
     <div class="rows projects">
-      <div class="peek" aria-hidden="true"></div>
-      <article class="row proj" data-reveal data-shots="assets/img/shot-findmyseat.jpg assets/img/findmyseat-chat.jpg">
+      <article class="row proj" data-reveal>
         <span class="k row-n" aria-hidden="true">02</span>
-        <h3><a href="https://devpost.com/software/findmyseat">FindMySeat<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
+        <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-findmyseat"><span class="proj-name">FindMySeat</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>Ultrasonic sensors on Raspberry Pis stream seat occupancy to a live Next.js dashboard, with a Gemini chat assistant for seat recommendations.</p>
-          <img class="shot" src="assets/img/shot-findmyseat.jpg" width="1120" height="700" alt="FindMySeat's occupancy map showing which seats at each table are taken" loading="lazy" decoding="async">
         </div>
         <div class="k row-meta">
           <span class="hl">Hack Western 12</span>
           <span>Nov 2025</span>
           <a class="tlink" href="https://findmyseathackwestern.vercel.app">Open the demo<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
           <a class="tlink" href="https://www.youtube.com/watch?v=jiRtKiY59do" data-video="jiRtKiY59do" data-title="FindMySeat demo">Watch the video<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+          <a class="tlink" href="https://devpost.com/software/findmyseat">Devpost<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+        </div>
+        <div class="thumb" aria-hidden="true"><div class="thumb-in"><img src="assets/img/shot-findmyseat.jpg" alt="" loading="lazy" decoding="async"><img src="assets/img/findmyseat-detail.jpg" alt="" loading="lazy" decoding="async"><img src="assets/img/findmyseat-chat.jpg" alt="" loading="lazy" decoding="async"></div></div>
+        <div class="proj-case" id="case-findmyseat">
+          <div class="proj-case-in">
+            <div class="pc-text"><ol class="steps"><li><button class="pc-step" type="button" data-step="0"><span class="k" aria-hidden="true">01</span><span>Ultrasonic sensors on Raspberry Pis detect which seats are taken.</span></button></li><li><button class="pc-step" type="button" data-step="1"><span class="k" aria-hidden="true">02</span><span>Occupancy streams to a live Next.js dashboard, seat by seat.</span></button></li><li><button class="pc-step" type="button" data-step="2"><span class="k" aria-hidden="true">03</span><span>A Gemini chat assistant recommends where to sit.</span></button></li></ol><p class="k stack">Raspberry Pi · Ultrasonic sensors · Next.js · Gemini</p></div>
+            <div class="pc-screen"><img class="frame" src="assets/img/shot-findmyseat.jpg" width="1120" height="700" alt="FindMySeat's occupancy map showing which seats at each table are taken" loading="lazy" decoding="async"><img class="frame" src="assets/img/findmyseat-detail.jpg" width="1387" height="952" alt="A seat's details in FindMySeat: status, popularity score, total hours used and average session time" loading="lazy" decoding="async"><img class="frame" src="assets/img/findmyseat-chat.jpg" width="1120" height="611" alt="FindMySeat's Gemini seat finder assistant recommending open seats beside the occupancy map" loading="lazy" decoding="async"></div>
+          </div>
         </div>
       </article>
 
-      <article class="row proj" data-reveal data-shots="assets/img/gripguardian.jpg">
+      <article class="row proj" data-reveal>
         <span class="k row-n" aria-hidden="true">03</span>
-        <h3><a href="https://dorahacks.io/buidl/13396">Grip Guardian<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
+        <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-gripguardian"><span class="proj-name">Grip Guardian</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>A mouse fitted with pressure and position sensors, and a React dashboard that shows grip habits linked to repetitive strain injury live. Built in 36 hours.</p>
-          <img class="shot shot-tall" src="assets/img/gripguardian.jpg" width="427" height="570" alt="The Grip Guardian prototype: a mouse shell fitted with sensors and wired to a microcontroller" loading="lazy" decoding="async">
         </div>
         <div class="k row-meta">
           <span class="hl">Best Development Tool</span>
           <span>JAMHacks 8, Jun 2024</span>
+          <a class="tlink" href="https://dorahacks.io/buidl/13396">DoraHacks<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+        </div>
+        <div class="thumb" aria-hidden="true"><div class="thumb-in"><img class="tall" src="assets/img/gripguardian.jpg" alt="" loading="lazy" decoding="async"><img src="assets/img/gripguardian-dashboard.jpg" alt="" loading="lazy" decoding="async"></div></div>
+        <div class="proj-case" id="case-gripguardian">
+          <div class="proj-case-in">
+            <div class="pc-text"><ol class="steps"><li><button class="pc-step" type="button" data-step="0"><span class="k" aria-hidden="true">01</span><span>A mouse fitted with pressure and position sensors, wired to a microcontroller.</span></button></li><li><button class="pc-step" type="button" data-step="1"><span class="k" aria-hidden="true">02</span><span>A React dashboard shows grip habits live.</span></button></li><li><button class="pc-step" type="button" data-step="2"><span class="k" aria-hidden="true">03</span><span>Points out habits linked to repetitive strain injury. Built in 36 hours.</span></button></li></ol><p class="k stack">Pressure sensors · Position sensors · Microcontroller · React</p></div>
+            <div class="pc-screen"><img class="frame frame-contain" src="assets/img/gripguardian.jpg" width="427" height="570" alt="The Grip Guardian prototype: a mouse shell fitted with sensors and wired to a microcontroller" loading="lazy" decoding="async"><img class="frame" src="assets/img/gripguardian-dashboard.jpg" width="1266" height="570" alt="Grip Guardian's dashboard welcome screen" loading="lazy" decoding="async"><img class="frame" src="assets/img/gripguardian-about.jpg" width="1318" height="570" alt="Grip Guardian's about page explaining how it helps prevent repetitive strain injuries" loading="lazy" decoding="async"></div>
+          </div>
         </div>
       </article>
 
-      <article class="row proj" data-reveal data-card="MLH Best Accessibility Hack|Hack the 6ix 2023">
+      <article class="row proj" data-reveal>
         <span class="k row-n" aria-hidden="true">04</span>
-        <h3><a href="https://devpost.com/software/guidebot">GuideBot<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
+        <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-guidebot"><span class="proj-name">GuideBot</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>A navigation robot for visually impaired users: an ESP32 robot driven over Bluetooth, with TensorFlow object recognition describing nearby objects.</p>
         </div>
         <div class="k row-meta">
           <span class="hl">MLH Best Accessibility Hack</span>
           <span>Hack the 6ix 2023</span>
+          <a class="tlink" href="https://devpost.com/software/guidebot">Devpost<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+        </div>
+        <div class="thumb" aria-hidden="true"><div class="thumb-in"><div class="thumb-type"><span>ESP32</span><span>TensorFlow</span></div></div></div>
+        <div class="proj-case" id="case-guidebot">
+          <div class="proj-case-in">
+            <div class="pc-text"><ol class="steps"><li><button class="pc-step" type="button" data-step="0"><span class="k" aria-hidden="true">01</span><span>An ESP32 robot, driven over Bluetooth, guides visually impaired users.</span></button></li><li><button class="pc-step" type="button" data-step="1"><span class="k" aria-hidden="true">02</span><span>TensorFlow object recognition picks out what is nearby.</span></button></li><li><button class="pc-step" type="button" data-step="2"><span class="k" aria-hidden="true">03</span><span>The robot describes those objects to its user.</span></button></li></ol><p class="k stack">ESP32 · Bluetooth · TensorFlow</p></div>
+            <div class="pc-screen"><div class="frame frame-type" role="img" aria-label="ESP32 over Bluetooth"><span class="k">01 / Drive</span><b>ESP32 over Bluetooth</b></div><div class="frame frame-type" role="img" aria-label="TensorFlow object recognition"><span class="k">02 / See</span><b>TensorFlow object recognition</b></div><div class="frame frame-type" role="img" aria-label="Describes nearby objects"><span class="k">03 / Tell</span><b>Describes nearby objects</b></div></div>
+          </div>
         </div>
       </article>
 
-      <article class="row proj" data-reveal data-shots="assets/img/shot-iwitness.jpg assets/img/iwitness-live.jpg">
+      <article class="row proj" data-reveal>
         <span class="k row-n" aria-hidden="true">05</span>
-        <h3><a href="https://devpost.com/software/temp-rft3ge">IWitness<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
+        <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-iwitness"><span class="proj-name">IWitness</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>A web app that watches live camera feeds and uses TensorFlow to flag crimes and medical emergencies for first responders.</p>
-          <img class="shot" src="assets/img/shot-iwitness.jpg" width="1120" height="700" alt="IWitness's home page" loading="lazy" decoding="async">
         </div>
         <div class="k row-meta">
           <span class="hl">2nd Place and Smart Cities Theme Award</span>
           <span>YRHacks, Mar 2023</span>
+          <a class="tlink" href="https://devpost.com/software/temp-rft3ge">Devpost<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+        </div>
+        <div class="thumb" aria-hidden="true"><div class="thumb-in"><img src="assets/img/shot-iwitness.jpg" alt="" loading="lazy" decoding="async"><img src="assets/img/iwitness-live.jpg" alt="" loading="lazy" decoding="async"><img src="assets/img/iwitness-alert.jpg" alt="" loading="lazy" decoding="async"></div></div>
+        <div class="proj-case" id="case-iwitness">
+          <div class="proj-case-in">
+            <div class="pc-text"><ol class="steps"><li><button class="pc-step" type="button" data-step="0"><span class="k" aria-hidden="true">01</span><span>A web app that watches live camera feeds.</span></button></li><li><button class="pc-step" type="button" data-step="1"><span class="k" aria-hidden="true">02</span><span>TensorFlow flags crimes and medical emergencies in the footage.</span></button></li><li><button class="pc-step" type="button" data-step="2"><span class="k" aria-hidden="true">03</span><span>Each incident is surfaced for first responders.</span></button></li></ol><p class="k stack">TensorFlow · Web app · Live camera feeds</p></div>
+            <div class="pc-screen"><img class="frame" src="assets/img/shot-iwitness.jpg" width="1120" height="700" alt="IWitness's home page" loading="lazy" decoding="async"><img class="frame" src="assets/img/iwitness-live.jpg" width="1120" height="630" alt="IWitness watching a live camera feed with tracking points on a person raising a hand" loading="lazy" decoding="async"><img class="frame" src="assets/img/iwitness-alert.jpg" width="1400" height="800" alt="IWitness raising an alert in the browser while tracking a person on a live feed" loading="lazy" decoding="async"></div>
+          </div>
         </div>
       </article>
 
-      <article class="row proj proj-plain" data-reveal data-card="100+ active members|React">
+      <article class="row proj proj-plain" data-reveal>
         <span class="k row-n" aria-hidden="true">06</span>
-        <h3>Computer Science Undergrad Society website</h3>
+        <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-csus"><span class="proj-name">Computer Science Undergrad Society website</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>A responsive club site in React that centralises events, announcements and resources for 100+ active members.</p>
         </div>
         <div class="k row-meta">
           <span class="hl">Western University</span>
           <span>Dec 2024 to present</span>
+        </div>
+        <div class="thumb" aria-hidden="true"><div class="thumb-in"><div class="thumb-type"><span>React</span><span>100+ members</span></div></div></div>
+        <div class="proj-case" id="case-csus">
+          <div class="proj-case-in">
+            <div class="pc-text"><ol class="steps"><li><button class="pc-step" type="button" data-step="0"><span class="k" aria-hidden="true">01</span><span>Brings the society's events, announcements and resources into one place.</span></button></li><li><button class="pc-step" type="button" data-step="1"><span class="k" aria-hidden="true">02</span><span>A responsive site built in React.</span></button></li><li><button class="pc-step" type="button" data-step="2"><span class="k" aria-hidden="true">03</span><span>Serves 100+ active members.</span></button></li></ol><p class="k stack">React · Responsive design</p></div>
+            <div class="pc-screen"><div class="frame frame-type" role="img" aria-label="Events, announcements, resources"><span class="k">01 / One place</span><b>Events, announcements, resources</b></div><div class="frame frame-type" role="img" aria-label="Responsive React"><span class="k">02 / Built</span><b>Responsive React</b></div><div class="frame frame-type" role="img" aria-label="100+ active members"><span class="k">03 / Serves</span><b>100+ active members</b></div></div>
+          </div>
         </div>
       </article>
     </div>
