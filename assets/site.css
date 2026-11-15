@@ -1,18 +1,108 @@
 /* eric-chen.ca
-   Cream paper, near-black ink, one muted gold.
-   One text face (Jost). The monospace (Geist Mono) is reserved for the name alone. */
+   Five colour schemes share one set of tokens (picked in the nav, assets/theme.js; the
+   attribute sits on <html>): --cream is the page, --ink the text, --gold the one accent,
+   --surf the dark surfaces (footer, thumbnails, the editor) with --on-surf as their text.
+   The *-rgb twins feed translucent tints and the canvas. Paper is the default.
+   Jost for text, Audiowide for the name, Geist Mono for code. */
 
-:root {
+:root, :root[data-theme="paper"] {
   --cream: #efe8dc;
   --ink: #151311;
+  --ink-rgb: 21 19 17;
   --soft: #4b443b;
   --gold: #7a5f30;
+  --gold-rgb: 122 95 48;
   --gold-l: #c8a46a;
+  --surf: #151311;
+  --surf-rgb: 21 19 17;
+  --on-surf: #efe8dc;
+  --on-surf-rgb: 239 232 220;
   --on-ink: #d3cbbe;
   --on-ink-soft: #b0a797;
-  --line: rgba(21, 19, 17, .2);
-  --line-d: rgba(239, 232, 220, .2);
+  --win: #f7f2ea;
+  color-scheme: light;
+}
+/* Night: the same palette with the lights off */
+:root[data-theme="night"] {
+  --code-a: .04;
+  --cream: #12110f;
+  --ink: #ece5d8;
+  --ink-rgb: 236 229 216;
+  --soft: #a89f90;
+  --gold: #d2ae70;
+  --gold-rgb: 210 174 112;
+  --gold-l: #d9b97f;
+  --surf: #1e1c19;
+  --surf-rgb: 30 28 25;
+  --on-surf: #ece5d8;
+  --on-surf-rgb: 236 229 216;
+  --on-ink: #d3cbbe;
+  --on-ink-soft: #a89f90;
+  --win: #1e1c19;
+  color-scheme: dark;
+}
+/* Slate: cool grey paper, cobalt accent */
+:root[data-theme="slate"] {
+  --cream: #eceff2;
+  --ink: #12161b;
+  --ink-rgb: 18 22 27;
+  --soft: #46505c;
+  --gold: #2c56c9;
+  --gold-rgb: 44 86 201;
+  --gold-l: #93b1ff;
+  --surf: #141a22;
+  --surf-rgb: 20 26 34;
+  --on-surf: #e6ebf1;
+  --on-surf-rgb: 230 235 241;
+  --on-ink: #cdd5df;
+  --on-ink-soft: #9aa6b4;
+  --win: #f7f9fb;
+  color-scheme: light;
+}
+/* Terminal: green phosphor on black */
+:root[data-theme="terminal"] {
+  --code-a: .04;
+  --cream: #0a0e0b;
+  --ink: #cfe9d4;
+  --ink-rgb: 207 233 212;
+  --soft: #8aa892;
+  --gold: #5fd38a;
+  --gold-rgb: 95 211 138;
+  --gold-l: #7fe0a2;
+  --surf: #121a14;
+  --surf-rgb: 18 26 20;
+  --on-surf: #cfe9d4;
+  --on-surf-rgb: 207 233 212;
+  --on-ink: #bcd8c2;
+  --on-ink-soft: #8aa892;
+  --win: #121a14;
+  color-scheme: dark;
+}
+/* Blueprint: drafting blue, amber accent */
+:root[data-theme="blueprint"] {
+  --code-a: .04;
+  --cream: #0f2240;
+  --ink: #e4edf8;
+  --ink-rgb: 228 237 248;
+  --soft: #a3b6cf;
+  --gold: #f2b84b;
+  --gold-rgb: 242 184 75;
+  --gold-l: #f5c66b;
+  --surf: #0a1830;
+  --surf-rgb: 10 24 48;
+  --on-surf: #e4edf8;
+  --on-surf-rgb: 228 237 248;
+  --on-ink: #cbd8ea;
+  --on-ink-soft: #a3b6cf;
+  --win: #142a4d;
+  color-scheme: dark;
+}
 
+:root {
+  --line: rgb(var(--ink-rgb) / .2);
+  --line-d: rgb(var(--on-surf-rgb) / .2);
+
+  --display: Audiowide, "Geist Mono", ui-monospace, sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --sans: Jost, "Century Gothic", system-ui, sans-serif;
 
@@ -30,7 +120,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--nav-h);
-  scrollbar-color: #8b7f6d var(--cream);
+  scrollbar-color: var(--soft) var(--cream);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -44,7 +134,9 @@ body {
 }
 
 ::selection { background: var(--ink); color: var(--cream); }
-.foot ::selection { background: var(--gold-l); color: var(--ink); }
+/* Switching schemes eases the big surfaces across instead of snapping */
+body, .nav, .sec, .sdlc, .hero-row, .foot { transition: background-color .5s var(--out), color .5s var(--out); }
+.foot ::selection { background: var(--gold-l); color: var(--surf); }
 
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; }
@@ -126,6 +218,37 @@ i { font-style: normal; }
   transition: background-size .45s var(--out);
 }
 .nav li a:hover, .nav li a:focus-visible, .mark:hover { background-size: 100% 1px; }
+.nav-row > nav { margin-left: auto; }
+
+/* Colour scheme picker (assets/theme.js): a swatch that opens a short list */
+.theme { position: relative; margin-left: clamp(16px, 2.4vw, 32px); }
+.theme-btn, .theme-menu button {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 44px; padding: 0; border: 0; background: none;
+  color: inherit; font: 500 12px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase;
+  cursor: pointer;
+}
+.theme-now { display: inline-flex; align-items: center; gap: 10px; }
+.theme-btn { min-width: 44px; justify-content: center; }
+.theme-sw {
+  width: 16px; height: 16px; flex: none; border-radius: 50%;
+  background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%);
+  box-shadow: 0 0 0 1px var(--line), inset 0 0 0 1px rgb(var(--ink-rgb) / .08);
+  transition: transform .4s var(--out);
+}
+.theme-btn:hover .theme-sw { transform: rotate(180deg); }
+.theme-menu {
+  position: absolute; right: -14px; top: calc(100% - 4px); z-index: 60;
+  min-width: 172px; padding: 6px 14px;
+  background: var(--cream); border: 1px solid var(--line);
+  box-shadow: 0 18px 40px -24px rgb(var(--ink-rgb) / .45);
+  animation: rise .35s var(--out);
+}
+.nav .theme-menu { display: block; }
+.nav .theme-menu[hidden] { display: none; }
+.theme-menu button { width: 100%; color: var(--soft); transition: color .3s; }
+.theme-menu button:hover, .theme-menu button[aria-pressed="true"] { color: var(--ink); }
+.theme-menu button[aria-pressed="true"]::after { content: ""; width: 5px; height: 5px; margin-left: auto; border-radius: 50%; background: var(--gold); }
 
 /* ── Button: ink fills from below on hover ───────── */
 .btn {
@@ -152,10 +275,10 @@ i { font-style: normal; }
 .btn:hover, .btn:focus-visible { color: var(--ink); }
 .btn:hover::after, .btn:focus-visible::after { transform: none; }
 .btn:active { transform: scale(.97); transition-duration: .08s; }
-.btn-light { border-color: var(--cream); color: var(--ink); }
-.btn-light::before { background: var(--cream); }
-.btn-light::after { background: var(--ink); }
-.btn-light:hover, .btn-light:focus-visible { color: var(--cream); }
+.btn-light { border-color: var(--on-surf); color: var(--surf); }
+.btn-light::before { background: var(--on-surf); }
+.btn-light::after { background: var(--surf); }
+.btn-light:hover, .btn-light:focus-visible { color: var(--on-surf); }
 /* Copy-email button: both labels share one cell so the width never jumps; the new one rolls up */
 .btn-roll { display: grid; overflow: hidden; padding-block: .35em; }
 .btn-roll > span { grid-area: 1 / 1; text-align: center; transition: transform .55s var(--out), opacity .4s; }
@@ -210,8 +333,8 @@ i { font-style: normal; }
 }
 .hero-field canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero-name {
-  font: 400 17.4cqi/.86 var(--mono);
-  letter-spacing: -.035em;
+  font: 400 16cqi/.9 var(--display);
+  letter-spacing: -.01em;
   text-transform: uppercase;
   white-space: nowrap;
   text-align: center;
@@ -329,7 +452,16 @@ h2 {
 .row-meta .hl { color: var(--gold); }
 
 /* ── Projects ────────────────────────────────────── */
-.proj { grid-template-columns: 40px minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, .75fr) clamp(132px, 13vw, 188px); }
+/* Number, then title over its links, the description, and a large screenshot that spans both */
+.proj { grid-template-columns: 40px minmax(0, 1fr) minmax(0, 1.25fr) clamp(220px, 25vw, 340px); row-gap: 4px; }
+@media (min-width: 861px) {
+  .proj > .row-n { grid-area: 1 / 1 / span 2; }
+  .proj > h3 { grid-area: 1 / 2; }
+  .proj > .row-meta { grid-area: 2 / 2; margin-top: 10px; }
+  .proj > .row-body { grid-area: 1 / 3 / span 2; }
+  .proj > .thumb { grid-area: 1 / 4 / span 2; }
+  .proj > .proj-case { grid-area: 3 / 2 / auto / -1; }
+}
 .row-n { color: var(--soft); padding-top: .9em; }
 .proj-toggle {
   display: inline-block;
@@ -370,14 +502,14 @@ html:not(.js) .proj-more { display: none; }
 }
 
 /* The aperture: each row's screenshots live in their own column, never over text.
-   On pointer screens it rests as a smaller grayscale thumbnail and grows into the full
-   frame in colour on hover, cycling the shots. Touch and narrow screens show it full. */
+   It rests large and in colour, a touch muted; on hover it comes up to full colour,
+   lifts slightly and cycles through the shots. */
 .thumb { position: relative; align-self: start; padding-top: .35em; }
 .thumb-in {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: var(--ink);
+  background: var(--surf);
   isolation: isolate;
 }
 .thumb-in > * {
@@ -394,20 +526,24 @@ html:not(.js) .proj-more { display: none; }
   padding: 12px 14px;
   font: 400 clamp(13px, 1.1vw, 16px)/1.15 var(--mono);
   letter-spacing: -.01em;
-  color: var(--cream);
+  color: var(--on-surf);
 }
 .thumb-type span + span { color: var(--gold-l); }
 .proj.is-open .thumb { opacity: 0; visibility: hidden; transition: opacity .3s, visibility 0s .3s; }
 
 @media (hover: hover) and (min-width: 861px) {
   .thumb-in {
-    transform: scale(.84);
-    transform-origin: 100% 0;
-    filter: grayscale(1) contrast(.92);
-    opacity: .72;
-    transition: transform .8s var(--out), filter .6s, opacity .6s;
+    filter: saturate(.8);
+    box-shadow: 0 0 0 1px var(--line);
+    transition: transform .8s var(--out), filter .6s, box-shadow .6s;
   }
-  .proj:hover .thumb-in, .proj:focus-within .thumb-in { transform: none; filter: none; opacity: 1; }
+  .thumb-in > img { transform: scale(1.001); transition: clip-path .9s var(--out), transform 1.2s var(--out); }
+  .proj:hover .thumb-in, .proj:focus-within .thumb-in {
+    filter: none;
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 1px var(--line), 0 22px 40px -26px rgb(var(--ink-rgb) / .55);
+  }
+  .proj:hover .thumb-in > img { transform: scale(1.04); }
 }
 
 /* ── Expanded projects: the same kind of display as Signal ── */
@@ -466,27 +602,43 @@ html:not(.js) .proj-more { display: none; }
 .frame-type {
   display: flex; flex-direction: column; justify-content: space-between;
   padding: clamp(20px, 3vw, 40px);
-  background: var(--ink);
+  background: var(--surf);
   color: var(--gold-l);
 }
 .frame-type b {
   font: 400 clamp(28px, 3.6vw, 56px)/1.02 var(--mono);
   letter-spacing: -.03em;
-  color: var(--cream);
+  color: var(--on-surf);
   max-width: 14ch;
 }
 .proj.is-open .proj-name { font-size: clamp(34px, 3.8vw, 60px); line-height: 1; letter-spacing: -.025em; transition: font-size .6s var(--out); }
 /* A row closing because another opened collapses at once (site.js keeps the scroll still) */
 .proj.no-anim .proj-case, .proj.no-anim .proj-case-in > *, .proj.no-anim .proj-name, .proj.no-anim .thumb { transition: none !important; }
+/* The expand bar under the picture (made by site.js) is the phone and tablet control */
+.proj-bar { display: none; }
 @media (max-width: 860px) {
-  /* Phones and tablets: the panel opens in place with no height animation. Its screen takes
-     the thumbnail's exact spot (same width, same 16:10 frame), so the picture just changes;
-     the steps and stack fade up beneath it. The title keeps its size. */
-  .js .proj-case { transition: none; }
+  /* Phones and tablets: the control sits at the bottom of the row, right under the picture,
+     and the panel opens exactly there. The panel's wrappers drop out of the layout so its
+     screen takes the thumbnail's spot (same width, same 16:10 frame) above the bar and its
+     steps open below the bar. No height animation, and the title keeps its size. */
+  .js .proj-case, .js .proj-case-in { display: contents; }
+  .js .proj:not(.is-open) :is(.pc-text, .pc-screen) { display: none; }
+  .js .proj .proj-more { display: none; }
+  .proj-toggle { min-height: 44px; }
   .proj.is-open .thumb { display: none; }
-  .pc-screen { margin-top: 0; max-width: 520px; }
-  .js .proj.is-open .proj-case-in > .pc-screen { transition: none; }
+  .js .proj .pc-screen { order: 1; margin: 0; max-width: 520px; transition: none; }
+  .proj-bar { order: 2; }
+  .js .proj .pc-text { order: 3; margin-top: 4px; }
   .proj.is-open .proj-name { font-size: inherit; letter-spacing: inherit; }
+  .proj-bar {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; max-width: 520px; min-height: 48px;
+    margin-top: -16px; padding: 0 16px;
+    border: 1px solid var(--line); border-top: 0; background: none;
+    color: var(--gold); cursor: pointer;
+  }
+  .proj-bar .more-label { margin-right: auto; }
+  .proj-bar:focus-visible { outline-offset: -2px; }
 }
 
 /* ── Signal: the case study ─────────────────────────
@@ -592,7 +744,7 @@ html:not(.js) .proj-more { display: none; }
   font: 400 12px/28px var(--mono);
   letter-spacing: .02em;
   white-space: pre;
-  color: rgba(21, 19, 17, .07);
+  color: rgb(var(--ink-rgb) / var(--code-a, .07));
   will-change: transform;
 }
 .case-log span { display: block; }
@@ -657,7 +809,7 @@ html:not(.js) .proj-more { display: none; }
 .case.pin .screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; }
 .screen-close {
   position: absolute; right: 12px; top: 12px; z-index: 6; min-height: 44px; padding: 0 16px;
-  border: 1px solid var(--line-d); background: var(--ink); color: var(--cream); cursor: pointer;
+  border: 1px solid var(--line-d); background: var(--surf); color: var(--on-surf); cursor: pointer;
 }
 .screen-close:focus-visible { outline-color: var(--gold-l); }
 
@@ -717,14 +869,14 @@ html:not(.js) .proj-more { display: none; }
 .js [data-reveal].done > * { transition-delay: 0s; transition-duration: .5s; }
 
 /* ── Contact footer ──────────────────────────────── */
-.foot { position: relative; background: var(--ink); color: var(--cream); padding-block: var(--band) 32px; overflow: clip; }
+.foot { position: relative; background: var(--surf); color: var(--on-surf); padding-block: var(--band) 32px; overflow: clip; }
 .foot-grid {
   display: grid;
   grid-template-columns: minmax(0, 8fr) minmax(0, 3fr);
   column-gap: clamp(32px, 8vw, 120px);
   align-items: end;
 }
-.foot h2 { max-width: 12ch; color: var(--cream); }
+.foot h2 { max-width: 12ch; color: var(--on-surf); }
 .foot-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; margin-top: clamp(36px, 6vh, 56px); }
 .foot-mail { color: var(--on-ink); font-weight: 400; letter-spacing: .02em; }
 .foot-links li { border-top: 1px solid var(--line-d); }
@@ -747,8 +899,8 @@ html:not(.js) .proj-more { display: none; }
 .foot > .wrap { container-type: inline-size; }
 .foot-name {
   margin-top: clamp(64px, 12vh, 128px);
-  font: 400 17.4cqi/.86 var(--mono);
-  letter-spacing: -.035em;
+  font: 400 16cqi/.9 var(--display);
+  letter-spacing: -.01em;
   text-transform: uppercase;
   white-space: nowrap;
   text-align: center;
@@ -759,14 +911,14 @@ html:not(.js) .proj-more { display: none; }
 .js .foot-name i { transform: translateY(108%); transition: transform 1.3s calc(var(--i) * 60ms) var(--out); }
 .js .foot-name.in i { transform: none; }
 /* ── Demo video dialog ───────────────────────────── */
-.film { margin: auto; padding: 0; border: 0; background: transparent; width: min(1100px, 100vw - 2 * var(--edge), (100svh - 120px) * 16 / 9); max-width: none; max-height: 100svh; overflow: visible; color: var(--cream); }
-.film::backdrop { background: rgba(21, 19, 17, .9); }
+.film { margin: auto; padding: 0; border: 0; background: transparent; width: min(1100px, 100vw - 2 * var(--edge), (100svh - 120px) * 16 / 9); max-width: none; max-height: 100svh; overflow: visible; color: var(--on-surf); }
+.film::backdrop { background: rgb(var(--surf-rgb) / .92); }
 .film[open] { animation: film-in .5s var(--out); }
 @keyframes film-in { from { opacity: 0; transform: translateY(24px) scale(.98); } }
 .film-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 10px; }
 .film-title { color: var(--gold-l); }
-.film-close { min-height: 44px; padding: 0 18px; border: 1px solid var(--line-d); background: none; color: var(--cream); cursor: pointer; transition: background .3s, color .3s; }
-.film-close:hover { background: var(--cream); color: var(--ink); }
+.film-close { min-height: 44px; padding: 0 18px; border: 1px solid var(--line-d); background: none; color: var(--on-surf); cursor: pointer; transition: background .3s, color .3s; }
+.film-close:hover { background: var(--on-surf); color: var(--surf); }
 .film-close:focus-visible { outline-color: var(--gold-l); }
 .film-frame { aspect-ratio: 16 / 9; background: #000; }
 .film-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
@@ -793,9 +945,10 @@ html:not(.js) .proj-more { display: none; }
   .proj { grid-template-columns: 40px minmax(0, 1fr); row-gap: 16px; }
   .proj .row-body, .proj .row-meta { grid-column: 2; }
   .proj .thumb { grid-column: 2; max-width: 520px; padding-top: 0; }
-  .proj-case { grid-column: 2; }
+  .proj-case, .proj .pc-text, .proj .pc-screen, .proj-bar { grid-column: 2; }
   .proj-case-in { grid-template-columns: minmax(0, 1fr); }
-  .pc-screen { order: -1; }
+  /* The faint code layer reads as noise behind narrow text, so it stays on wide screens */
+  .code-bg { display: none; }
 
   .role { grid-template-columns: minmax(0, 1fr); row-gap: 16px; }
   .role .row-meta { padding-top: 0; flex-direction: row; gap: 0; }
@@ -810,13 +963,17 @@ html:not(.js) .proj-more { display: none; }
 @media (max-width: 600px) {
   body { font-size: 16.5px; }
   .nav-wide { display: none; }
-  .nav ul { gap: 14px; }
+  .nav ul { gap: 18px; }
   .nav li a, .mark { letter-spacing: .12em; }
+  .theme { margin-left: 18px; }
+  .theme-label { display: none; }
 
   .hero { min-height: 0; }
   .hero-top { padding-top: 16px; }
-  .hero-field { min-height: 56px; margin-top: 12px; }
-  .hero-name { font-size: 24cqi; line-height: .9; white-space: normal; text-align: left; }
+  /* Phones keep the essentials: name, pitch, one button. The term map and the repeated
+     address are left to bigger screens. */
+  .hero-field, .hero-mail { display: none; }
+  .hero-name { font-size: 29cqi; line-height: .95; white-space: normal; text-align: left; }
   .hero-name .w { display: block; width: fit-content; }
   .hero-meta { flex-direction: column; gap: 2px; }
   .hero-row { padding-top: 20px; row-gap: 18px; }
@@ -828,9 +985,15 @@ html:not(.js) .proj-more { display: none; }
   .hero-more { order: 3; margin-top: 0; }
   .btn { width: 100%; }
 
-  .proj { grid-template-columns: minmax(0, 1fr); }
-  .proj .row-body, .proj .row-meta, .proj-case, .proj .thumb { grid-column: 1; }
+  .proj { grid-template-columns: minmax(0, 1fr); row-gap: 14px; }
+  .proj .row-body, .proj .row-meta, .proj-case, .proj .thumb, .proj .pc-text, .proj .pc-screen, .proj-bar { grid-column: 1; }
+  .proj > .row-n { display: none; }
   .row-n { padding-top: 0; }
+  /* Award and date on one line, the links in a row beneath */
+  .proj .row-meta { display: block; }
+  .proj .row-meta > span + span::before { content: "/"; margin-inline: .7em; color: var(--gold); }
+  .proj .row-meta > span:last-of-type::after { content: "\A"; white-space: pre; }
+  .proj .row-meta .tlink { margin: 0 22px 0 0; vertical-align: top; }
   .points li { padding-left: 22px; }
 
   .foot-cta { flex-direction: column; align-items: stretch; }
@@ -859,62 +1022,53 @@ html:not(.js) .proj-more { display: none; }
 }
 
 /* ── Plan to shipped: the software lifecycle plays as you scroll (assets/sdlc.js) ──
-   The stage pins for the section's length; each scene draws, then hands over. */
-.sdlc { position: relative; height: 230vh; background: var(--cream); }
-.sdlc-pin {
-  position: sticky;
-  top: var(--nav-h);
-  height: calc(100svh - var(--nav-h));
-  display: grid;
-  place-items: center;
-  padding: clamp(16px, 4vh, 40px) var(--edge);
-}
-.sdlc-svg { display: block; width: min(1000px, 100%); height: auto; max-height: 100%; overflow: visible; }
+   It scrolls with the page like any other block (no pinning, nothing to scroll through):
+   the scenes play from the moment it enters the screen until it sits mid-screen. */
+.sdlc { position: relative; background: var(--cream); padding-top: clamp(40px, 8vh, 96px); }
+.sdlc-pin { display: grid; place-items: center; padding-inline: var(--edge); }
+.sdlc-svg { display: block; width: min(860px, 100%); height: auto; max-height: 60vh; overflow: visible; }
 .sdlc-svg text { font: 400 13px var(--mono); fill: var(--soft); }
 .sdlc-svg [pathLength] { stroke-dasharray: 1; }
 .sdlc-svg [data-k="grow"] { transform-box: fill-box; transform-origin: 0 50%; }
 .sdlc-svg .tl text { font-size: 14px; letter-spacing: .02em; transition: fill .4s; }
 .tl-base { stroke: var(--line); stroke-width: 1; }
 .tl-fill { stroke: var(--gold); stroke-width: 3; stroke-dashoffset: 1; }
-.tl-stop circle { fill: var(--cream); stroke: rgba(21, 19, 17, .35); stroke-width: 1.5; transition: fill .4s, stroke .4s; }
+.tl-stop circle { fill: var(--cream); stroke: rgb(var(--ink-rgb) / .35); stroke-width: 1.5; transition: fill .4s, stroke .4s; }
 .tl-stop.past circle { fill: var(--gold); stroke: var(--gold); }
 .tl-stop.on circle { stroke: var(--gold); stroke-width: 3; }
 .sdlc-svg .tl-stop.on text { fill: var(--ink); }
 .sdlc-svg .tl-stop.past text { fill: var(--gold); }
-.sdlc-svg .ln { fill: none; stroke: rgba(21, 19, 17, .7); stroke-width: 1.5; }
-.sdlc-svg .ln.soft { stroke: rgba(21, 19, 17, .25); }
-.sdlc-svg .card { fill: var(--cream); stroke: rgba(21, 19, 17, .55); stroke-width: 1.2; }
-.sdlc-svg .bar { fill: rgba(21, 19, 17, .55); }
-.sdlc-svg .bar.soft { fill: rgba(21, 19, 17, .2); }
+.sdlc-svg .ln { fill: none; stroke: rgb(var(--ink-rgb) / .7); stroke-width: 1.5; }
+.sdlc-svg .ln.soft { stroke: rgb(var(--ink-rgb) / .25); }
+.sdlc-svg .card { fill: var(--cream); stroke: rgb(var(--ink-rgb) / .55); stroke-width: 1.2; }
+.sdlc-svg .bar { fill: rgb(var(--ink-rgb) / .55); }
+.sdlc-svg .bar.soft { fill: rgb(var(--ink-rgb) / .2); }
 .sdlc-svg .bar.g { fill: var(--gold); }
-.sdlc-svg .dot { fill: rgba(21, 19, 17, .3); }
-.sdlc-svg .editor, .sdlc-svg .screen { fill: var(--ink); }
-.sdlc-svg .dot-d { fill: rgba(239, 232, 220, .25); }
-.sdlc-svg .code { fill: rgba(239, 232, 220, .55); }
+.sdlc-svg .dot { fill: rgb(var(--ink-rgb) / .3); }
+.sdlc-svg .editor, .sdlc-svg .screen { fill: var(--surf); }
+.sdlc-svg .dot-d { fill: rgb(var(--on-surf-rgb) / .25); }
+.sdlc-svg .code { fill: rgb(var(--on-surf-rgb) / .55); }
 .sdlc-svg .code.g { fill: var(--gold-l); }
-.sdlc-svg .gutter { font-size: 11px; fill: rgba(239, 232, 220, .3); }
-.sdlc-svg .ck-ring { fill: none; stroke: rgba(21, 19, 17, .3); stroke-width: 1.5; }
+.sdlc-svg .gutter { font-size: 11px; fill: rgb(var(--on-surf-rgb) / .3); }
+.sdlc-svg .ck-ring { fill: none; stroke: rgb(var(--ink-rgb) / .3); stroke-width: 1.5; }
 .sdlc-svg .ck { fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 .sdlc-svg .mono { font-size: 14px; fill: var(--ink); }
 .sdlc-svg .mono.soft { fill: var(--soft); }
 .sdlc-svg .mono.gold { fill: var(--gold); }
-.sdlc-svg .node { fill: var(--cream); stroke: rgba(21, 19, 17, .6); stroke-width: 1.5; }
+.sdlc-svg .node { fill: var(--cream); stroke: rgb(var(--ink-rgb) / .6); stroke-width: 1.5; }
 .sdlc-svg .packet { fill: var(--gold); }
 .sdlc-svg .logo { font: 500 64px var(--mono); fill: var(--gold-l); }
 .sdlc-svg .app { transform-origin: 500px 310px; }
-.sdlc-svg .app-win { fill: #f7f2ea; stroke: rgba(21, 19, 17, .7); stroke-width: 1.5; }
-.sdlc-svg .side { fill: rgba(21, 19, 17, .05); }
-.sdlc-svg .kpi { fill: var(--cream); stroke: rgba(21, 19, 17, .18); }
+.sdlc-svg .app-win { fill: var(--win); stroke: rgb(var(--ink-rgb) / .7); stroke-width: 1.5; }
+.sdlc-svg .side { fill: rgb(var(--ink-rgb) / .05); }
+.sdlc-svg .kpi { fill: var(--cream); stroke: rgb(var(--ink-rgb) / .18); }
 .sdlc-svg .num { font-size: 20px; }
 .sdlc-svg .chart { fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
 /* Without scripts, show only the finished app */
-html:not(.js) .sdlc { height: auto; }
-html:not(.js) .sdlc-pin { position: static; height: auto; padding-block: var(--band) 0; }
 html:not(.js) .sdlc .layer:not([data-final]) { display: none; }
 html:not(.js) .tl-fill { stroke-dashoffset: 0; }
 @media (max-width: 600px) {
   /* The graphic is ~1/3 scale on a phone, so its labels get bigger in its own units */
-  .sdlc { height: 200vh; }
   .sdlc-svg .tl text { font-size: 30px; }
   .sdlc-svg .mono { font-size: 24px; }
   .sdlc-svg .num { font-size: 32px; }

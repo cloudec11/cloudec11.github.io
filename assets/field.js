@@ -20,7 +20,14 @@
     [0.88, ['Python', 'JavaScript', 'Java', 'C++', 'Git', 'pull requests', 'Docker', 'AWS Lambda', 'Linux', 'CI/CD']],
   ];
   const K = 4;
-  const INK = '21, 19, 17', GOLD = '122, 95, 48';
+  // Colours come from the active scheme's tokens ("r g b"), re-read when it changes
+  let INK = '21 19 17', GOLD = '122 95 48';
+  const tokens = () => {
+    const cs = getComputedStyle(root);
+    INK = cs.getPropertyValue('--ink-rgb').trim() || INK;
+    GOLD = cs.getPropertyValue('--gold-rgb').trim() || GOLD;
+  };
+  tokens();
   const FONT = '400 12px "Geist Mono", ui-monospace, monospace';
 
   let w = 0, h = 0, dpr = 1, nodes = [], raf = 0, onScreen = true;
@@ -83,27 +90,27 @@
       const n = p.n;
       n.hl += ((n.rank ? 1 : 0) - n.hl) * (n.rank ? 0.16 : 0.06);
       if (n.hl > 0.02) {               // the line from the query to a neighbour
-        ctx.strokeStyle = `rgba(${GOLD}, ${(0.55 * n.hl).toFixed(3)})`;
+        ctx.strokeStyle = `rgb(${GOLD} / ${(0.55 * n.hl).toFixed(3)})`;
         ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(p.x, p.y); ctx.stroke();
       }
     }
     for (const p of pos) {
       const n = p.n;
-      ctx.fillStyle = n.hl > 0.02 ? `rgba(${GOLD}, ${(0.35 + 0.65 * n.hl).toFixed(3)})` : `rgba(${INK}, .22)`;
+      ctx.fillStyle = n.hl > 0.02 ? `rgb(${GOLD} / ${(0.35 + 0.65 * n.hl).toFixed(3)})` : `rgb(${INK} / .22)`;
       ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3);
-      ctx.fillStyle = `rgba(${INK}, ${(0.26 + 0.74 * n.hl).toFixed(3)})`;
+      ctx.fillStyle = `rgb(${INK} / ${(0.26 + 0.74 * n.hl).toFixed(3)})`;
       ctx.fillText(n.word, p.x + 8, p.y);
       if (n.rank && n.hl > 0.3) {
-        ctx.fillStyle = `rgba(${GOLD}, ${n.hl.toFixed(3)})`;
+        ctx.fillStyle = `rgb(${GOLD} / ${n.hl.toFixed(3)})`;
         ctx.fillText(`[${n.rank}]`, p.x + 14 + n.tw, p.y);
       }
     }
     // The query itself
-    ctx.strokeStyle = `rgba(${GOLD}, .9)`;
+    ctx.strokeStyle = `rgb(${GOLD} / .9)`;
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(qx, qy, 5, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = `rgba(${GOLD}, 1)`;
+    ctx.fillStyle = `rgb(${GOLD})`;
     ctx.fillRect(qx - 1, qy - 1, 2, 2);
   };
 
@@ -144,6 +151,7 @@
     }, { passive: true });
     hero.addEventListener('pointerleave', () => { inHero = false; mouse = false; });
     addEventListener('scroll', follow, { passive: true });
+    addEventListener('themechange', () => { tokens(); if (still || !raf) draw(still ? t0 : performance.now()); });
     kick();
   });
 })();

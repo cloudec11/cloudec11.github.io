@@ -1,8 +1,9 @@
-/* Nib pressure: letters of the name thicken under the cursor like pen pressure,
-   then dry back to rest. Rest state = wght 400 (the static look). */
+/* Signal lift: letters of the name rise and take on the accent colour under the cursor,
+   then settle back. Audiowide has a single weight, so the effect is position and colour
+   rather than stroke. Touch screens get one slow sweep after the entrance instead. */
 (() => {
   const name = document.querySelector('.hero-name');
-  if (!name || !(window.CSS && CSS.supports('font-variation-settings', '"wght" 400'))) return;
+  if (!name) return;
   const forced = /[?&]motion=1(&|$)/.test(location.search);
   if (!forced && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -11,38 +12,14 @@
   const area = name.closest('section') || name.parentElement;
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 861px)');
 
-  const W0 = 400, W1 = 800;          // weight at rest / full pressure
-  const ATTACK = .08, DECAY = .3;     // smoothing time constants, s (~1s to dry)
-  const COMP = .65;                  // share of width growth cancelled by scaleX
-  const DROP = .018;                  // max downward press, em (~2.5% of cap height)
+  const ATTACK = .08, DECAY = .35;    // smoothing time constants, s
 
-  const p = new Float32Array(n);      // current pressure 0..1
+  const p = new Float32Array(n);      // current lift 0..1
   const tgt = new Float32Array(n);
-  const grow = new Float32Array(n).fill(1); // width ratio at full pressure
   let px = 0, py = 0, inside = false, raf = 0, last = 0;
   let ready = false, onScreen = true, wave = -1;
 
-  const set = (el, k, v) => el.style.setProperty(k, v);
-
-  function paint(i) {
-    const q = p[i], el = L[i];
-    set(el, '--w', (W0 + (W1 - W0) * q).toFixed(1));
-    set(el, '--s', Math.pow(1 / (1 + (grow[i] - 1) * q), COMP).toFixed(4));
-    set(el, '--y', (DROP * q).toFixed(4) + 'em');
-  }
-
-  // Lock every letter box at its rest width (in em, so it scales with cqi type)
-  function measure() {
-    const cs = getComputedStyle(name), fs = parseFloat(cs.fontSize);
-    const zoom = name.getBoundingClientRect().width / name.offsetWidth || 1; // scroll recede scale
-    name.classList.add('is-measuring');
-    L.forEach((el) => set(el, '--w', W0));
-    const rest = L.map((el) => el.getBoundingClientRect().width / zoom);
-    L.forEach((el) => set(el, '--w', W1));
-    L.forEach((el, i) => { grow[i] = el.getBoundingClientRect().width / zoom / rest[i]; });
-    name.classList.remove('is-measuring');
-    L.forEach((el, i) => { el.style.width = (rest[i] / fs).toFixed(5) + 'em'; paint(i); });
-  }
+  const paint = (i) => L[i].style.setProperty('--q', p[i].toFixed(3));
 
   function frame(t) {
     raf = 0;
@@ -51,7 +28,7 @@
     if (wave >= 0) {                  // one slow sweep, left to right
       wave += dt / 2.6;
       const at = -1.5 + wave * (n + 2.5);
-      for (let i = 0; i < n; i++) tgt[i] = .72 * Math.exp(-((i - at) ** 2) / 1.3);
+      for (let i = 0; i < n; i++) tgt[i] = .8 * Math.exp(-((i - at) ** 2) / 1.3);
       if (wave >= 1) wave = -1;
     } else if (inside) {              // read rects before any writes this frame
       for (let i = 0; i < n; i++) {
@@ -94,19 +71,11 @@
     if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else kick();
   });
 
-  // Wait for the variable font and for the entrance animation (~1.67s) to finish
-  const fonts = document.fonts ? Promise.all([
-    document.fonts.load('300 1em "Geist Mono"'),
-    document.fonts.load('800 1em "Geist Mono"'),
-  ]).catch(() => {}) : Promise.resolve();
-  const entrance = new Promise((r) => setTimeout(r, Math.max(0, 1700 - performance.now())));
-
-  Promise.all([fonts, entrance]).then(() => {
-    name.classList.add('is-nib');
-    measure();
-    new ResizeObserver(() => measure()).observe(name.parentElement);
+  // Start once the entrance animation (~1.67s) has finished
+  setTimeout(() => {
+    name.classList.add('is-lift');
     ready = true;
     if (!fine.matches) wave = 0;
     kick();
-  });
+  }, Math.max(0, 1700 - performance.now()));
 })();

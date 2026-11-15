@@ -3,5 +3,45 @@
 .claude/
 skills-lock.json
 
+# Design-skill working output (local only).
+# .taste-skill/ holds the taste skill's checker runs, including a full Chrome profile
+# with saved logins, cookies and history. Never commit it.
+.taste-skill/
+.impeccable/critique/
+.impeccable/live/
+.impeccable/hook.cache.json
+
 # Review notes (local only)
 RECRUITER-FEEDBACK.md
+
+# Raw media awaiting processing (large; only the web-ready copies in assets/ ship)
+drafts/footage/
+
+# Browser profiles or captures from any tool, wherever they land
+**/chrome-check/
+**/chrome-profile*/
+**/user-data-dir*/
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Dependencies and tool caches
+node_modules/
+.npm/
+.cache/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

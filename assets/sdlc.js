@@ -1,12 +1,11 @@
-/* Plan to shipped: the software lifecycle, driven by scroll. The section pins while you
-   scroll through it; progress p (0 to 1) picks the scene and how far it has drawn:
+/* Plan to shipped: the software lifecycle, driven by scroll. It plays as the graphic
+   scrolls up into view; progress p (0 to 1) picks the scene and how far it has drawn:
    plan, design, build, test, deploy, then a laptop whose screen grows into a finished app.
    Each animated element carries data-k (how it animates) and data-a (when, as a 0-1 range
    within its scene). Under reduced motion it shows the finished app and does not move. */
 (() => {
   const sec = document.querySelector('.sdlc');
   if (!sec) return;
-  const pin = sec.querySelector('.sdlc-pin');
   const root = document.documentElement;
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('force-motion');
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -62,11 +61,13 @@
     });
   };
 
+  // Nothing pins: progress runs from the graphic's top entering the screen (0) to the
+  // graphic sitting centred in it (1), so it has finished while still in full view.
+  const svg = sec.querySelector('.sdlc-svg');
   const progress = () => {
-    const r = sec.getBoundingClientRect();
-    const top = parseFloat(getComputedStyle(pin).top) || 0;
-    const run = sec.offsetHeight - pin.offsetHeight;
-    return run > 0 ? clamp((top - r.top) / run, 0, 1) : 1;
+    const r = svg.getBoundingClientRect(), vh = innerHeight;
+    const start = vh * 0.92, end = Math.max(64, (vh - r.height) / 2);
+    return start > end ? clamp((start - r.top) / (start - end), 0, 1) : 1;
   };
 
   if (still) { render(1); return; }

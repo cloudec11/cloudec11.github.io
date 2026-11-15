@@ -22,9 +22,10 @@
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300..800&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Geist+Mono:wght@400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <link rel="stylesheet" href="assets/hero.css">
+<script>(function(){var r=document.documentElement,t=null;try{t=localStorage.getItem('theme')}catch(e){}if(!t&&matchMedia('(prefers-color-scheme: dark)').matches)t='night';if(t){r.dataset.theme=t;var c={paper:'#efe8dc',night:'#12110f',slate:'#eceff2',terminal:'#0a0e0b',blueprint:'#0f2240'}[t];if(c)document.querySelector('meta[name="theme-color"]').content=c}})()</script>
 <script>document.documentElement.classList.add('js');if(/[?&]motion=1/.test(location.search))document.documentElement.classList.add('force-motion');setTimeout(function(){if(!window.siteReady)document.documentElement.classList.remove('js')},3000)</script>
 </head>
 <body id="top">
@@ -40,11 +41,12 @@
     <nav aria-label="Sections">
       <ul class="k">
         <li class="nav-wide"><a href="#projects">Projects</a></li>
-        <li><a href="#experience">Experience</a></li>
+        <li class="nav-wide"><a href="#experience">Experience</a></li>
         <li><a href="assets/Eric-Chen-Resume.pdf" target="_blank" rel="noopener">Resume</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
+    <div class="theme" hidden></div>
   </div>
 </header>
 
@@ -476,6 +478,7 @@
   </div>
 </dialog>
 <p class="sr-only" role="status" aria-live="polite" id="copy-status"></p>
+<script src="assets/theme.js" defer></script>
 <script src="assets/site.js" defer></script>
 <script src="assets/hero.js" defer></script>
 <script src="assets/field.js" defer></script>

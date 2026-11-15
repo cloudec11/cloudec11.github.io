@@ -113,6 +113,7 @@
   // that wipes between real screenshots. One open at a time. Works under reduced motion,
   // which only drops the auto-advance.
   const openers = new Map();
+  const narrow = matchMedia('(max-width: 860px)');
   let anchorT = 0;
   document.querySelectorAll('.proj').forEach((row) => {
     const btn = row.querySelector('.proj-toggle'), panel = row.querySelector('.proj-case');
@@ -133,10 +134,21 @@
     const tick = () => { timer = setTimeout(() => { set((cur + 1) % items.length); tick(); }, STEP_MS); };
     const play = () => { stop(); if (!still && items.length > 1) { panel.classList.add('is-playing'); tick(); } };
     const warm = () => frames.forEach((f) => { if (f.tagName === 'IMG') f.loading = 'eager'; });
+    // Phones and tablets get the control at the bottom of the row, under the picture,
+    // where the panel opens (CSS shows it below 861px and hides the title's Expand).
+    const bar = document.createElement('button');
+    bar.type = 'button';
+    bar.className = 'proj-bar k';
+    bar.setAttribute('aria-controls', panel.id);
+    bar.setAttribute('aria-expanded', 'false');
+    bar.innerHTML = '<span class="more-label"><span class="more-open">Expand project</span><span class="more-close">Close project</span></span><i class="plus" aria-hidden="true"></i>';
+    panel.before(bar);
+    bar.addEventListener('click', () => btn.click());
     items.forEach((li, k) => li.querySelector('.pc-step')?.addEventListener('click', () => { set(k); stop(); }));
     const open = (on) => {
       row.classList.toggle('is-open', on);
       btn.setAttribute('aria-expanded', String(on));
+      bar.setAttribute('aria-expanded', String(on));
       panel.inert = !on;
       if (on) { warm(); set(0); play(); } else stop();
     };
@@ -184,9 +196,17 @@
       if (shift) scrollBy({ top: shift, behavior: 'instant' });
       open(on);
       if (!on) return;
+      const behavior = still ? 'instant' : 'smooth', navH = 64;
+      if (narrow.matches) {
+        // The panel opens right under the bar that was tapped, so the page only moves when
+        // the bar sits low enough that the steps would open off screen.
+        const b = bar.getBoundingClientRect();
+        if (b.bottom > innerHeight - 160) scrollBy({ top: b.top - innerHeight * 0.45, behavior });
+        return;
+      }
       // Bring the row up only when its top is not already near the top of the screen
-      const top = row.getBoundingClientRect().top, navH = 64;
-      if (top < navH || top > innerHeight * 0.35) scrollBy({ top: top - navH - 8, behavior: still ? 'instant' : 'smooth' });
+      const top = row.getBoundingClientRect().top;
+      if (top < navH || top > innerHeight * 0.35) scrollBy({ top: top - navH - 8, behavior });
     });
   });
 
