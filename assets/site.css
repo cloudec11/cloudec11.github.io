@@ -374,8 +374,8 @@ html:not(.js) .proj-more { display: none; }
 }
 
 /* The aperture: each row's screenshots live in their own column, never over text.
-   On pointer screens it rests as a thin letterbox slice and opens into the full frame
-   on hover, cycling the shots. Touch and narrow screens show the full frame. */
+   On pointer screens it rests as a smaller grayscale thumbnail and grows into the full
+   frame in colour on hover, cycling the shots. Touch and narrow screens show it full. */
 .thumb { position: relative; align-self: start; padding-top: .35em; }
 .thumb-in {
   position: relative;
@@ -405,12 +405,13 @@ html:not(.js) .proj-more { display: none; }
 
 @media (hover: hover) and (min-width: 861px) {
   .thumb-in {
-    clip-path: inset(41% 0 41% 0);
-    transition: clip-path .8s var(--out);
+    transform: scale(.84);
+    transform-origin: 100% 0;
+    filter: grayscale(1) contrast(.92);
+    opacity: .72;
+    transition: transform .8s var(--out), filter .6s, opacity .6s;
   }
-  .thumb-in > img { filter: grayscale(1) contrast(.9); opacity: .78; transform: scale(1.12); transition: clip-path .9s var(--out), filter .6s, opacity .6s, transform 1.2s var(--out); }
-  .proj:hover .thumb-in, .proj:focus-within .thumb-in { clip-path: inset(0); }
-  .proj:hover .thumb-in > img, .proj:focus-within .thumb-in > img { filter: none; opacity: 1; transform: none; }
+  .proj:hover .thumb-in, .proj:focus-within .thumb-in { transform: none; filter: none; opacity: 1; }
 }
 
 /* ── Expanded projects: the same kind of display as Signal ── */
