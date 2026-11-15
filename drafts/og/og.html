@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG image source</title>
+<!-- Source for assets/og.png (1200x630). Render with headless Edge, see report. -->
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz@6..96&family=Jost:wght@300;400;500&display=block" rel="stylesheet">
+<style>
+  :root { --cream:#efe8dc; --ink:#151311; --soft:#564e44; --gold:#7a5f30; --line:rgba(21,19,17,.2); }
+  * { box-sizing:border-box; margin:0; }
+  html, body { width:1200px; height:630px; overflow:hidden; background:var(--cream); }
+  body { color:var(--ink); font:300 17px/1.4 Jost, sans-serif; -webkit-font-smoothing:antialiased; }
+  .card { position:absolute; inset:64px 80px 60px; display:flex; flex-direction:column; }
+  .label { font:500 15px/1 Jost, sans-serif; letter-spacing:.2em; text-transform:uppercase; }
+  .top { display:flex; justify-content:space-between; padding-bottom:20px; border-bottom:1px solid var(--line); color:var(--soft); }
+  .name { margin-top:auto; font:400 206px/.8 "Bodoni Moda", serif; font-variation-settings:"opsz" 36;
+          letter-spacing:-.035em; text-transform:uppercase; white-space:nowrap; margin-left:-.03em; }
+  .base { margin-top:46px; padding-top:26px; border-top:1px solid var(--line);
+          display:flex; justify-content:space-between; align-items:baseline; gap:40px; }
+  .line { font:300 34px/1.15 Jost, sans-serif; letter-spacing:-.005em; max-width:20ch; }
+  .award { color:var(--gold); text-align:right; line-height:1.6; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="top label"><span>eric-chen.ca</span><span>Computer Science, Western University</span></div>
+    <p class="name">Eric Chen</p>
+    <div class="base">
+      <p class="line">Software developer for AI tools and full-stack apps</p>
+      <p class="award label">Winner of RBC prize,<br>Hack the North 2026</p>
+    </div>
+  </div>
+</body>
+</html>

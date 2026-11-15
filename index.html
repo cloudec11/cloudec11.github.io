@@ -12,13 +12,20 @@
 <meta property="og:title" content="Eric Chen, software developer for AI tools and full-stack apps">
 <meta property="og:description" content="Computer Science at Western University. Full-stack apps, LLM agents and retrieval systems. Looking for Fall 2027 co-op roles.">
 <meta property="og:url" content="https://eric-chen.ca/">
-<meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23151311'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='Didot,Bodoni MT,Georgia,serif' font-size='42' fill='%23c8a46a'%3EE%3C/text%3E%3C/svg%3E">
+<meta property="og:image" content="https://eric-chen.ca/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Eric Chen, software developer for AI tools and full-stack apps. Winner of RBC prize, Hack the North 2026.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://eric-chen.ca/assets/og.png">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz@6..96&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
-<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="assets/hero.css">
+<script>document.documentElement.classList.add('js');if(/[?&]motion=1/.test(location.search))document.documentElement.classList.add('force-motion');setTimeout(function(){if(!window.siteReady)document.documentElement.classList.remove('js')},3000)</script>
 </head>
 <body id="top">
 <a class="skip" href="#main">Skip to content</a>
@@ -65,23 +72,35 @@
       <a class="tlink k" href="https://devpost.com/cloudec-11">See more on Devpost<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
     </header>
 
-    <div class="rows projects">
-      <article class="row proj" data-reveal data-shot="assets/img/shot-signal.jpg">
-        <span class="k row-n" aria-hidden="true">01</span>
-        <h3><a href="https://devpost.com/software/temp-project-0sp3zv">Signal<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
-        <div class="row-body">
-          <p>A multi-agent financial research assistant that answers with line-level citations and flags conflicting or missing data instead of guessing.</p>
+    <article class="case" id="signal" aria-labelledby="signal-title" data-case>
+      <div class="case-stage">
+        <div class="case-text" data-reveal>
+          <p class="k case-award"><span class="row-n" aria-hidden="true">01</span><span class="hl">Winner, RBC &ldquo;Signal in the Noise&rdquo; prize</span><span>Hack the North 2026</span></p>
+          <h3 id="signal-title" class="case-title">Signal</h3>
+          <p class="case-lede">A multi-agent financial research assistant that answers with line-level citations and flags conflicting or missing data instead of guessing.</p>
+          <ol class="steps">
+            <li data-step="0"><span class="k" aria-hidden="true">01</span><p>Loads new datasets from a URL through an MCP client.</p></li>
+            <li data-step="1"><span class="k" aria-hidden="true">02</span><p>Answers with line-level citations, found by hybrid BM25 and vector search in Elasticsearch.</p></li>
+            <li data-step="2"><span class="k" aria-hidden="true">03</span><p>A FastAPI backend streams the live agent trace.</p></li>
+            <li data-step="3"><span class="k" aria-hidden="true">04</span><p>Flags conflicting or missing data instead of guessing.</p></li>
+          </ol>
           <p class="k stack">Python · FastAPI · Elasticsearch · OpenAI · MCP · MongoDB</p>
-          <img class="shot" src="assets/img/shot-signal.jpg" width="1120" height="700" alt="Signal's landing page: ask questions of any data and get answers" loading="lazy" decoding="async">
+          <div class="case-links">
+            <a class="tlink" href="https://www.youtube.com/watch?v=uoozwdHRqZA" data-video="uoozwdHRqZA" data-title="Signal demo">Watch the demo<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+            <a class="tlink" href="https://devpost.com/software/temp-project-0sp3zv">Devpost<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+            <a class="tlink" href="https://github.com/liamma06/searchGM">Read the code<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+          </div>
         </div>
-        <div class="k row-meta">
-          <span class="hl">Winner, RBC &ldquo;Signal in the Noise&rdquo; prize</span>
-          <span>Hack the North 2026</span>
-          <a class="tlink" href="https://github.com/liamma06/searchGM">Read the code<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+        <div class="screen" tabindex="0" role="group" aria-label="Signal screenshots" data-reveal>
+          <img class="frame f0" src="assets/img/signal-1.jpg" width="1400" height="690" alt="Signal's landing page: ask questions of any data and get answers" loading="lazy" decoding="async">
+          <img class="frame f1" src="assets/img/signal-2.jpg" width="1400" height="695" alt="A Signal answer about RBC's quarterly revenue and EPS, with numbered citations and an agent tracker showing planner, retriever, verifier and writer times" loading="lazy" decoding="async">
+          <img class="frame f2" src="assets/img/signal-3.jpg" width="850" height="736" alt="Signal's agent graph tracing retrieved lines into an answer, with two conflicting figures marked in red" loading="lazy" decoding="async">
         </div>
-      </article>
+      </div>
+    </article>
 
-      <article class="row proj" data-reveal data-shot="assets/img/shot-findmyseat.jpg">
+    <div class="rows projects">
+      <article class="row proj" data-reveal data-shots="assets/img/shot-findmyseat.jpg assets/img/findmyseat-chat.jpg">
         <span class="k row-n" aria-hidden="true">02</span>
         <h3><a href="https://devpost.com/software/findmyseat">FindMySeat<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
         <div class="row-body">
@@ -92,14 +111,16 @@
           <span class="hl">Hack Western 12</span>
           <span>Nov 2025</span>
           <a class="tlink" href="https://findmyseathackwestern.vercel.app">Open the demo<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+          <a class="tlink" href="https://www.youtube.com/watch?v=jiRtKiY59do" data-video="jiRtKiY59do" data-title="FindMySeat demo">Watch the video<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
         </div>
       </article>
 
-      <article class="row proj" data-reveal>
+      <article class="row proj" data-reveal data-shots="assets/img/gripguardian.jpg">
         <span class="k row-n" aria-hidden="true">03</span>
         <h3><a href="https://dorahacks.io/buidl/13396">Grip Guardian<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
         <div class="row-body">
           <p>A mouse fitted with pressure and position sensors, and a React dashboard that shows grip habits linked to repetitive strain injury live. Built in 36 hours.</p>
+          <img class="shot shot-tall" src="assets/img/gripguardian.jpg" width="427" height="570" alt="The Grip Guardian prototype: a mouse shell fitted with sensors and wired to a microcontroller" loading="lazy" decoding="async">
         </div>
         <div class="k row-meta">
           <span class="hl">Best Development Tool</span>
@@ -107,7 +128,7 @@
         </div>
       </article>
 
-      <article class="row proj" data-reveal>
+      <article class="row proj" data-reveal data-card="MLH Best Accessibility Hack|Hack the 6ix 2023">
         <span class="k row-n" aria-hidden="true">04</span>
         <h3><a href="https://devpost.com/software/guidebot">GuideBot<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
         <div class="row-body">
@@ -119,7 +140,7 @@
         </div>
       </article>
 
-      <article class="row proj" data-reveal data-shot="assets/img/shot-iwitness.jpg">
+      <article class="row proj" data-reveal data-shots="assets/img/shot-iwitness.jpg assets/img/iwitness-live.jpg">
         <span class="k row-n" aria-hidden="true">05</span>
         <h3><a href="https://devpost.com/software/temp-rft3ge">IWitness<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></h3>
         <div class="row-body">
@@ -132,7 +153,7 @@
         </div>
       </article>
 
-      <article class="row proj proj-plain" data-reveal>
+      <article class="row proj proj-plain" data-reveal data-card="100+ active members|React">
         <span class="k row-n" aria-hidden="true">06</span>
         <h3>Computer Science Undergrad Society website</h3>
         <div class="row-body">
@@ -175,7 +196,7 @@
         </div>
         <ul class="points">
           <li>Rewrote a Python scraper&rsquo;s parsing logic to handle more edge cases, doubling its effectiveness.</li>
-          <li>Resolved <b>20+</b> defects in QA across the web app and cut front-end bugs by <b>50 percent</b>.</li>
+          <li>Resolved <b><span class="num" data-n="20">20</span>+</b> defects in QA across the web app and cut front-end bugs by <b><span class="num" data-n="50">50</span> percent</b>.</li>
           <li>Used Cursor&rsquo;s agentic workflows and structured prompting to refactor and QA the front end in <b>3 weeks</b>, halving time spent on manual QA.</li>
         </ul>
       </li>
@@ -186,8 +207,8 @@
           <p>Executive Member</p>
         </div>
         <ul class="points">
-          <li>Designed and delivered weekly workshops on data structures, algorithms and software design for <b>300+</b> students.</li>
-          <li>Mentored <b>100+</b> students; contest participation and performance rose <b>20 percent</b>.</li>
+          <li>Designed and delivered weekly workshops on data structures, algorithms and software design for <b><span class="num" data-n="300">300</span>+</b> students.</li>
+          <li>Mentored <b><span class="num" data-n="100">100</span>+</b> students; contest participation and performance rose <b><span class="num" data-n="20">20</span> percent</b>.</li>
         </ul>
       </li>
       <li class="row role" data-reveal>
@@ -198,7 +219,7 @@
         </div>
         <ul class="points">
           <li>Built and tested production web features for client websites, with API integrations that present database-driven data in client-facing views.</li>
-          <li>Documented issues and fixes, reducing repeat defects by <b>15 percent</b>.</li>
+          <li>Documented issues and fixes, reducing repeat defects by <b><span class="num" data-n="15">15</span> percent</b>.</li>
           <li>Shared a Git codebase with 4 developers.</li>
         </ul>
       </li>
@@ -247,7 +268,7 @@
         <li><a href="https://devpost.com/cloudec-11"><span>Devpost</span><svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a></li>
       </ul>
     </div>
-    <p class="foot-name" aria-hidden="true">Eric Chen</p>
+    <p class="foot-name" aria-hidden="true"><span class="w"><i style="--i:0">E</i><i style="--i:1">r</i><i style="--i:2">i</i><i style="--i:3">c</i></span> <span class="w"><i style="--i:5">C</i><i style="--i:6">h</i><i style="--i:7">e</i><i style="--i:8">n</i></span></p>
     <div class="foot-base">
       <span>&copy; 2026 Eric Chen</span>
       <span>Toronto, ON</span>
@@ -256,6 +277,13 @@
 </footer>
 
 <div class="peek" aria-hidden="true"></div>
+<dialog class="film" aria-label="Project demo video">
+  <div class="film-box">
+    <div class="film-bar"><p class="k film-title"></p><button class="film-close k" type="button">Close</button></div>
+    <div class="film-frame"></div>
+  </div>
+</dialog>
 <script src="assets/site.js" defer></script>
+<script src="assets/hero.js" defer></script>
 </body>
 </html>

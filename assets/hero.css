@@ -1,0 +1,9 @@
+/* Nib pressure (assets/hero.js). Only active once JS adds .is-nib after the entrance. */
+.hero-name.is-nib .w { overflow: visible; }
+.hero-name.is-nib i {
+  display: inline-flex;
+  justify-content: center; /* heavier glyphs spill evenly past the locked box */
+  font-variation-settings: "wght" var(--w, 400), "opsz" var(--o, 96);
+  transform: translateY(var(--y, 0)) scaleX(var(--s, 1));
+}
+.hero-name.is-measuring i { width: auto !important; transform: none; }

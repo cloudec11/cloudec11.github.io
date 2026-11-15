@@ -11,6 +11,33 @@
         ],
         "createdAt": "2026-11-14T20:50:48.607Z",
         "reason": "Claude: static scan cannot see padding in assets/site.css; rendered-page scan at localhost reports zero cramped-padding findings"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-15T01:34:55.052Z",
+        "reason": "user confirmed: drafts/next-prompt.md says keep the cream, ink and gold palette and that the cream-palette finding is expected and stays"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "drafts/hero-test/index.html"
+        ],
+        "createdAt": "2026-11-15T01:34:55.172Z",
+        "reason": "user confirmed: drafts/next-prompt.md says keep the cream, ink and gold palette and that the cream-palette finding is expected and stays"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "drafts/og/og.html"
+        ],
+        "createdAt": "2026-11-15T01:34:55.299Z",
+        "reason": "user confirmed: drafts/next-prompt.md says keep the cream, ink and gold palette and that the cream-palette finding is expected and stays"
       }
     ]
   }
