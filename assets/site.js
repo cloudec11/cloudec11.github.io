@@ -136,6 +136,11 @@
     };
     panel.inert = true;
     openers.set(row, open);
+    row.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !row.classList.contains('is-open')) return;
+      open(false);
+      btn.focus();
+    });
     row.addEventListener('pointerenter', warm, { once: true });
     // Fetch the row's hidden frames (aperture shots and panel screens) before they are needed
     if ('IntersectionObserver' in window) {
@@ -153,6 +158,54 @@
       if (on) setTimeout(() => row.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' }), 80);
     });
   });
+
+  // Very faint code drifts behind the whole Projects section, slower than the page.
+  // Starts somewhere new each load; holds still under reduced motion.
+  const codeLog = document.querySelector('.code-bg .case-log');
+  if (codeLog) {
+      const src = [
+        'from fastapi import FastAPI, Request', 'from elasticsearch import AsyncElasticsearch', '',
+        'app = FastAPI()', 'es = AsyncElasticsearch(ES_URL)', '',
+        'async def retrieve(query: str, k: int = 8):', '    body = {',
+        '        "query": {"match": {"text": query}},', '        "knn": {"field": "vec", "query_vector": embed(query), "k": k},',
+        '    }', '    hits = await es.search(index="filings", body=body)',
+        '    return [Line(h["_source"]) for h in hits["hits"]["hits"]]', '',
+        'async def verify(claims: list[Claim]) -> list[Flag]:', '    flags = []',
+        '    for a, b in pairs(claims):', '        if a.metric == b.metric and a.value != b.value:',
+        '            flags.append(Flag("conflict", a.cite, b.cite))', '    for gap in missing(claims):',
+        '        flags.append(Flag("missing", gap))', '    return flags', '',
+        '@app.post("/ask")', 'async def ask(req: Request):', '    q = (await req.json())["question"]',
+        '    plan = await planner.run(q)', '    lines = await retrieve(plan.query)',
+        '    draft = await writer.run(q, lines)', '    flags = await verify(draft.claims)',
+        '    return stream(trace(plan, lines, draft, flags))', '',
+        'def cite(line: Line) -> str:', '    return f"[{line.doc}:L{line.n}]"', '',
+        'async def load_dataset(url: str):', '    async with mcp.client(url) as c:',
+        '        rows = await c.call("fetch", {"url": url})', '    await index(rows)', '',
+        'def read_seat(sensor) -> bool:', '    cm = sensor.distance * 100', '    return cm < SEAT_THRESHOLD_CM', '',
+        'while True:', '    states = {s.id: read_seat(s) for s in sensors}', '    requests.post(API + "/seats", json=states)', '    time.sleep(1)', '',
+        'export async function GET() {', '  const seats = await db.collection("seats").find().toArray();', '  return Response.json(seats);', '}', '',
+        'void loop() {', '  if (SerialBT.available()) drive(SerialBT.read());', '  delay(20);', '}', '',
+        'for frame in camera.stream():', '    poses = model.predict(frame)', '    if fall_detected(poses) or hands_up(poses):', '        alert(responders, frame)', '',
+      ];
+    const startAt = Math.floor(Math.random() * src.length);
+    const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    let html = '';
+    for (let i = 0; i < 200; i++) html += `<span data-n="${i + 1}">${esc(src[(startAt + i) % src.length])}</span>`;
+    codeLog.innerHTML = html;
+    if (!still) {
+      const sec = codeLog.closest('section');
+      let ticking = false;
+      const drift = () => {
+        ticking = false;
+        const r = sec.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > innerHeight) return;
+        const y = clamp(-r.top, 0, r.height);
+        codeLog.style.transform = `translate3d(0, ${(-y * 0.32).toFixed(1)}px, 0)`;
+      };
+      addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(drift); } }, { passive: true });
+      drift();
+    }
+  }
 
   // 2. Demo videos: inline in Signal's screen, in a dialog for other projects.
   const embed = (id, title) => {
@@ -205,37 +258,6 @@
     const frames = [...kase.querySelectorAll('.frame')];
     const frameFor = [0, 1, 1, 2];
     const stage = kase.querySelector('.case-stage');
-    // Very faint code scrolls behind the pinned stage. Starts somewhere new each load.
-    const log = kase.querySelector('.case-log');
-    if (log) {
-      const src = [
-        'from fastapi import FastAPI, Request', 'from elasticsearch import AsyncElasticsearch', '',
-        'app = FastAPI()', 'es = AsyncElasticsearch(ES_URL)', '',
-        'async def retrieve(query: str, k: int = 8):', '    body = {',
-        '        "query": {"match": {"text": query}},', '        "knn": {"field": "vec", "query_vector": embed(query), "k": k},',
-        '    }', '    hits = await es.search(index="filings", body=body)',
-        '    return [Line(h["_source"]) for h in hits["hits"]["hits"]]', '',
-        'async def verify(claims: list[Claim]) -> list[Flag]:', '    flags = []',
-        '    for a, b in pairs(claims):', '        if a.metric == b.metric and a.value != b.value:',
-        '            flags.append(Flag("conflict", a.cite, b.cite))', '    for gap in missing(claims):',
-        '        flags.append(Flag("missing", gap))', '    return flags', '',
-        '@app.post("/ask")', 'async def ask(req: Request):', '    q = (await req.json())["question"]',
-        '    plan = await planner.run(q)', '    lines = await retrieve(plan.query)',
-        '    draft = await writer.run(q, lines)', '    flags = await verify(draft.claims)',
-        '    return stream(trace(plan, lines, draft, flags))', '',
-        'def cite(line: Line) -> str:', '    return f"[{line.doc}:L{line.n}]"', '',
-        'async def load_dataset(url: str):', '    async with mcp.client(url) as c:',
-        '        rows = await c.call("fetch", {"url": url})', '    await index(rows)', '',
-      ];
-      const start = Math.floor(Math.random() * src.length);
-      const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-      let html = '';
-      for (let i = 0; i < 90; i++) {
-        const code = esc(src[(start + i) % src.length]);
-        html += `<span data-n="${i + 1}">${code}</span>`;
-      }
-      log.innerHTML = html;
-    }
     const wantPin = matchMedia('(hover: hover) and (min-width: 1000px) and (min-height: 640px)');
     let cur = -1, ticking = false, on = false;
     const set = (i) => {

@@ -274,6 +274,10 @@ i { font-style: normal; }
 .hero-side > :nth-child(1) { animation-delay: .6s; }
 .hero-side > :nth-child(2) { animation-delay: .7s; }
 .hero-side > :nth-child(3) { animation-delay: .8s; }
+.hero-side > :nth-child(4) { animation-delay: .9s; }
+.hero-more { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; margin-top: -6px; }
+.hero-more .tlink { color: var(--ink); }
+.hero-mail { color: var(--soft); letter-spacing: .02em; }
 [data-enter] > .hero-side { animation: none; }
 @keyframes rise { from { opacity: 0; transform: translateY(22px); } }
 
@@ -356,6 +360,8 @@ h2 {
 .is-open .plus::after { transform: rotate(0deg); }
 html:not(.js) .proj-more { display: none; }
 .is-open .proj-toggle::after { display: none; }
+/* Open rows drop the full-row hit area, so the ring moves back onto the title itself */
+.is-open .proj-toggle:focus-visible { outline: 2px solid var(--ring); outline-offset: 6px; }
 .row-body p { max-width: 46ch; }
 .stack { margin-top: 14px; color: var(--soft); letter-spacing: .14em; }
 .row-meta .tlink { position: relative; z-index: 1; align-self: flex-start; margin-top: 6px; color: var(--ink); }
@@ -529,11 +535,13 @@ html:not(.js) .pc-screen .frame:first-child { clip-path: none; transform: none; 
 .screen iframe { flex: 0 0 100%; width: 100%; aspect-ratio: 16 / 9; border: 0; background: #0a0a0a; }
 
 @media (max-width: 860px) {
-  .case-stage { grid-template-columns: minmax(0, 1fr); row-gap: 36px; }
+  .case-stage { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+  /* Small screens see the product before reading about it */
+  .case:not(.pin) .screen { order: -1; }
 }
 
 /* Pinned mode */
-.case.pin { height: calc(100svh + 260vh); padding: 0; }
+.case.pin { height: calc(100svh + 150vh); padding: 0; }
 .case.pin .case-stage {
   position: sticky;
   top: var(--nav-h);
@@ -542,28 +550,36 @@ html:not(.js) .pc-screen .frame:first-child { clip-path: none; transform: none; 
   align-items: start;
   isolation: isolate;
 }
-.case.pin .screen { margin-top: clamp(28px, 4vh, 44px); }
+.case.pin .screen { align-self: center; }
 
 /* While pinned, a faint agent trace scrolls behind the stage and a rail fills,
    so it reads as scrolling even though the stage itself stands still. */
-.case-bg, .case-rail { display: none; }
-.case.pin .case-bg {
-  display: block;
+.case-rail { display: none; }
+/* Very faint source code behind the whole Projects section. The layer sticks to the
+   screen while you are in the section and the code drifts slower than the page. */
+.code-bg {
   position: absolute;
-  inset: 0 calc(50% - 50vw);
-  z-index: -1;
-  overflow: hidden;
+  inset: 0;
+  z-index: 0;
+  overflow: clip; /* clip, not hidden: hidden would stop the inner layer from sticking */
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
-  mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+  -webkit-mask-image: linear-gradient(transparent, #000 220px, #000 calc(100% - 220px), transparent);
+  mask-image: linear-gradient(transparent, #000 220px, #000 calc(100% - 220px), transparent);
 }
-/* Very faint source code scrolls behind the pinned stage; nothing else */
+.code-bg-pin {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100svh - var(--nav-h));
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+}
+#projects > .wrap { position: relative; z-index: 1; }
 .case-log {
   font: 400 12px/28px var(--mono);
   letter-spacing: .02em;
   white-space: pre;
   color: rgba(21, 19, 17, .07);
-  transform: translate3d(0, calc(var(--p, 0) * -1120px), 0);
   will-change: transform;
 }
 .case-log span { display: block; }
@@ -593,6 +609,8 @@ html:not(.js) .pc-screen .frame:first-child { clip-path: none; transform: none; 
 .case.pin .case-title { font-size: clamp(48px, 5.2vw, 84px); }
 .case.pin .steps li { padding-block: 10px; }
 .case.pin .steps li.on { color: var(--ink); }
+.case.pin .steps li.on p { font-weight: 400; }
+.case.pin .steps li.on::after { height: 2px; }
 .case.pin .steps li.on::after, .case.pin .steps li.past::after { transform: none; }
 .case.pin .steps li.past::after { opacity: .35; }
 .case.pin .screen {
@@ -621,6 +639,8 @@ html:not(.js) .pc-screen .frame:first-child { clip-path: none; transform: none; 
 .case.pin .f1 { transition: clip-path 1s var(--out), transform 1.6s var(--out), transform-origin 1.6s var(--out); }
 .case.pin[data-step="1"] .f1 { transform: scale(1.5); transform-origin: 0 24%; }
 .case.pin[data-step="2"] .f1 { transform: scale(1.85); transform-origin: 100% 26%; }
+/* The graph fills the stage, framed on the conflicting figures, instead of sitting letterboxed */
+.case.pin .f2 { object-fit: cover; object-position: 50% 39%; }
 .case.pin .screen iframe { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; }
 .screen-close {
   position: absolute; right: 12px; top: 12px; z-index: 6; min-height: 44px; padding: 0 16px;
@@ -777,13 +797,22 @@ html:not(.js) .pc-screen .frame:first-child { clip-path: none; transform: none; 
 @media (max-width: 600px) {
   body { font-size: 16.5px; }
   .nav-wide { display: none; }
+  .nav ul { gap: 14px; }
+  .nav li a, .mark { letter-spacing: .12em; }
 
   .hero { min-height: 0; }
-  .hero-name { font-size: 38cqi; line-height: .9; white-space: normal; text-align: left; }
+  .hero-top { padding-top: 16px; }
+  .hero-field { min-height: 56px; margin-top: 12px; }
+  .hero-name { font-size: 24cqi; line-height: .9; white-space: normal; text-align: left; }
   .hero-name .w { display: block; width: fit-content; }
   .hero-meta { flex-direction: column; gap: 2px; }
-  .hero-row { padding-top: 28px; }
-  .hero h1 { font-size: 34px; max-width: none; }
+  .hero-row { padding-top: 20px; row-gap: 18px; }
+  .hero h1 { font-size: 30px; max-width: none; }
+  /* The button comes straight after the pitch; the award and resume follow it */
+  .hero-side { gap: 18px; }
+  .hero-side .btn { order: 1; margin-top: 0; }
+  .hero-side .fact { order: 2; }
+  .hero-more { order: 3; margin-top: 0; }
   .btn { width: 100%; }
 
   .proj { grid-template-columns: minmax(0, 1fr); }
