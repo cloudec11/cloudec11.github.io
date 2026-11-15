@@ -113,6 +113,7 @@
   // that wipes between real screenshots. One open at a time. Works under reduced motion,
   // which only drops the auto-advance.
   const openers = new Map();
+  let anchorT = 0;
   document.querySelectorAll('.proj').forEach((row) => {
     const btn = row.querySelector('.proj-toggle'), panel = row.querySelector('.proj-case');
     if (!btn || !panel) return;
@@ -124,8 +125,13 @@
       items.forEach((li, k) => { li.classList.toggle('on', k === i); li.classList.toggle('past', k < i); });
       frames.forEach((f, k) => f.classList.toggle('on', k <= i));
     };
-    const stop = () => { clearInterval(timer); timer = 0; };
-    const play = () => { stop(); if (!still && items.length > 1) timer = setInterval(() => set((cur + 1) % items.length), 3600); };
+    // While playing, the active step's line fills over STEP_MS (CSS reads --step), then
+    // the next step takes over. Choosing a step stops the clock and shows its line full.
+    const STEP_MS = 4200;
+    panel.style.setProperty('--step', `${STEP_MS}ms`);
+    const stop = () => { clearTimeout(timer); timer = 0; panel.classList.remove('is-playing'); };
+    const tick = () => { timer = setTimeout(() => { set((cur + 1) % items.length); tick(); }, STEP_MS); };
+    const play = () => { stop(); if (!still && items.length > 1) { panel.classList.add('is-playing'); tick(); } };
     const warm = () => frames.forEach((f) => { if (f.tagName === 'IMG') f.loading = 'eager'; });
     items.forEach((li, k) => li.querySelector('.pc-step')?.addEventListener('click', () => { set(k); stop(); }));
     const open = (on) => {
@@ -141,6 +147,13 @@
       open(false);
       btn.focus();
     });
+    // A click anywhere on the row toggles it, except on its links and controls, inside
+    // the open panel, or when the click finished a text selection.
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('a, button, .proj-case')) return;
+      if (String(getSelection?.() || '')) return;
+      btn.click();
+    });
     row.addEventListener('pointerenter', warm, { once: true });
     // Fetch the row's hidden frames (aperture shots and panel screens) before they are needed
     if ('IntersectionObserver' in window) {
@@ -153,9 +166,27 @@
     }
     btn.addEventListener('click', () => {
       const on = !row.classList.contains('is-open');
-      openers.forEach((fn, r) => { if (r !== row && r.classList.contains('is-open')) fn(false); });
+      // Keep the page still while rows change size: no scroll anchoring for the toggle,
+      // and a row closing above this one collapses at once with the scroll compensated,
+      // so the row that was tapped stays exactly where it was.
+      root.style.overflowAnchor = 'none';
+      clearTimeout(anchorT);
+      anchorT = setTimeout(() => { root.style.overflowAnchor = ''; }, 1200);
+      const before = row.getBoundingClientRect().top;
+      openers.forEach((fn, r) => {
+        if (r === row || !r.classList.contains('is-open')) return;
+        r.classList.add('no-anim');
+        fn(false);
+        void r.offsetHeight;
+        r.classList.remove('no-anim');
+      });
+      const shift = row.getBoundingClientRect().top - before;
+      if (shift) scrollBy({ top: shift, behavior: 'instant' });
       open(on);
-      if (on) setTimeout(() => row.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' }), 80);
+      if (!on) return;
+      // Bring the row up only when its top is not already near the top of the screen
+      const top = row.getBoundingClientRect().top, navH = 64;
+      if (top < navH || top > innerHeight * 0.35) scrollBy({ top: top - navH - 8, behavior: still ? 'instant' : 'smooth' });
     });
   });
 

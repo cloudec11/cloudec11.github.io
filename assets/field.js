@@ -1,4 +1,4 @@
-/* Nearest neighbours: a semantic map of the things I build with, laid out in topic
+/* Nearest neighbours: a semantic map of software development, laid out in topic
    clusters like an embedding space. The cursor is the query: its nearest terms light up,
    ranked [1] to [4] like citations. Without a cursor a ghost query drifts between clusters.
    One still frame under reduced motion. */
@@ -11,12 +11,13 @@
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('force-motion');
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
 
-  // Every term comes from the projects and skills on this page. [cluster x-centre, terms]
+  // Software development vocabulary, by topic: AI tooling, the web stack, engineering
+  // practice, and languages and infrastructure. [cluster x-centre, terms]
   const CLUSTERS = [
-    [0.12, ['Signal', 'agents', 'retrieval', 'BM25', 'kNN', 'citations', 'OpenAI', 'MCP', 'Elasticsearch', 'planner', 'verifier']],
-    [0.38, ['React', 'Next.js', 'Node.js', 'FastAPI', 'Flask', 'REST', 'JavaScript', 'MongoDB', 'real-time', 'CSUS site']],
-    [0.63, ['FindMySeat', 'GuideBot', 'Grip Guardian', 'ESP32', 'Raspberry Pi', 'ultrasonic', 'Bluetooth', 'sensors', 'TensorFlow', 'OpenCV', 'IWitness']],
-    [0.88, ['Python', 'Java', 'C++', 'AWS Lambda', 'Docker', 'Git', 'Twilio', 'Alexa', 'Google APIs']],
+    [0.12, ['LLM agents', 'RAG', 'embeddings', 'vector search', 'BM25', 'tool calling', 'MCP', 'OpenAI API', 'prompting', 'evals', 'citations']],
+    [0.38, ['React', 'Next.js', 'Node.js', 'FastAPI', 'Flask', 'REST APIs', 'JSON', 'WebSockets', 'MongoDB', 'auth', 'HTML/CSS']],
+    [0.63, ['data structures', 'algorithms', 'OOP', 'client-server', 'system design', 'debugging', 'refactoring', 'unit tests', 'code review', 'QA']],
+    [0.88, ['Python', 'JavaScript', 'Java', 'C++', 'Git', 'pull requests', 'Docker', 'AWS Lambda', 'Linux', 'CI/CD']],
   ];
   const K = 4;
   const INK = '21, 19, 17', GOLD = '122, 95, 48';
@@ -121,14 +122,28 @@
     document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else kick(); });
 
     const hero = box.closest('section') || box;
+    // Follow the cursor anywhere in the hero while the page sits at the top; once it has
+    // scrolled, only while the cursor is over the graphic itself. Scrolling moves the
+    // graphic under a still cursor, so the check runs on scroll too.
+    let px = -1, py = -1, inHero = false;
+    const follow = () => {
+      if (px < 0) return;
+      const r = box.getBoundingClientRect();
+      const over = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
+      mouse = over || (inHero && scrollY < 8);
+      if (mouse) {
+        tx = Math.min(w, Math.max(0, px - r.left));
+        ty = Math.min(h, Math.max(0, py - r.top));
+        kick();
+      }
+    };
     hero.addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch' || !fine.matches) return;
-      const r = box.getBoundingClientRect();
-      mouse = true;
-      tx = Math.min(w, Math.max(0, e.clientX - r.left));
-      ty = Math.min(h, Math.max(0, e.clientY - r.top));
+      px = e.clientX; py = e.clientY; inHero = true;
+      follow();
     }, { passive: true });
-    hero.addEventListener('pointerleave', () => { mouse = false; });
+    hero.addEventListener('pointerleave', () => { inHero = false; mouse = false; });
+    addEventListener('scroll', follow, { passive: true });
     kick();
   });
 })();

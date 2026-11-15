@@ -343,10 +343,9 @@ h2 {
   cursor: pointer;
   transition: transform .6s var(--out);
 }
-/* The whole row is the click target for expanding */
-.proj-toggle::after { content: ""; position: absolute; inset: 0; }
-.proj-toggle:focus-visible { outline: none; }
-.proj-toggle:focus-visible::after { outline: 2px solid var(--ring); outline-offset: -2px; }
+/* The whole row expands on click (site.js); the title stays the keyboard control */
+.js .proj:has(.proj-toggle):not(.is-open) { cursor: pointer; }
+.proj-toggle:focus-visible { outline: 2px solid var(--ring); outline-offset: 6px; }
 .proj-name { display: block; }
 .proj-more { display: inline-flex; align-items: center; gap: 10px; margin-top: 12px; color: var(--gold); }
 .more-close, .is-open .more-open { display: none; }
@@ -359,9 +358,6 @@ h2 {
 .plus::after { transform: rotate(90deg); }
 .is-open .plus::after { transform: rotate(0deg); }
 html:not(.js) .proj-more { display: none; }
-.is-open .proj-toggle::after { display: none; }
-/* Open rows drop the full-row hit area, so the ring moves back onto the title itself */
-.is-open .proj-toggle:focus-visible { outline: 2px solid var(--ring); outline-offset: 6px; }
 .row-body p { max-width: 46ch; }
 .stack { margin-top: 14px; color: var(--soft); letter-spacing: .14em; }
 .row-meta .tlink { position: relative; z-index: 1; align-self: flex-start; margin-top: 6px; color: var(--ink); }
@@ -443,6 +439,10 @@ html:not(.js) .proj-more { display: none; }
 .pc-step:hover, .proj-case li.on .pc-step { color: var(--ink); }
 .proj-case .steps li.on::after, .proj-case .steps li.past::after { transform: none; }
 .proj-case .steps li.past::after { opacity: .35; }
+/* Auto-advance: the active step's line fills like the reading bar, then the next step starts */
+.proj-case .steps li::after { height: 2px; }
+.proj-case.is-playing .steps li.on::after { transition: none; animation: step-fill var(--step, 4200ms) linear both; }
+@keyframes step-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .pc-text .stack { margin-top: 18px; }
 .pc-screen {
   position: relative; z-index: 1;
@@ -460,6 +460,8 @@ html:not(.js) .proj-more { display: none; }
   transition: clip-path 1s var(--out), transform 1.5s var(--out);
 }
 .pc-screen .frame.on { clip-path: inset(0); transform: none; }
+/* The first frame is the base and always shows; later frames wipe over it and back off */
+.pc-screen .frame:first-child { clip-path: inset(0); transform: none; }
 .pc-screen .frame-contain { object-fit: contain; object-position: 50% 50%; }
 .frame-type {
   display: flex; flex-direction: column; justify-content: space-between;
@@ -474,8 +476,18 @@ html:not(.js) .proj-more { display: none; }
   max-width: 14ch;
 }
 .proj.is-open .proj-name { font-size: clamp(34px, 3.8vw, 60px); line-height: 1; letter-spacing: -.025em; transition: font-size .6s var(--out); }
-/* Without scripts every panel is simply open, first frame showing */
-html:not(.js) .pc-screen .frame:first-child { clip-path: none; transform: none; }
+/* A row closing because another opened collapses at once (site.js keeps the scroll still) */
+.proj.no-anim .proj-case, .proj.no-anim .proj-case-in > *, .proj.no-anim .proj-name, .proj.no-anim .thumb { transition: none !important; }
+@media (max-width: 860px) {
+  /* Phones and tablets: the panel opens in place with no height animation. Its screen takes
+     the thumbnail's exact spot (same width, same 16:10 frame), so the picture just changes;
+     the steps and stack fade up beneath it. The title keeps its size. */
+  .js .proj-case { transition: none; }
+  .proj.is-open .thumb { display: none; }
+  .pc-screen { margin-top: 0; max-width: 520px; }
+  .js .proj.is-open .proj-case-in > .pc-screen { transition: none; }
+  .proj.is-open .proj-name { font-size: inherit; letter-spacing: inherit; }
+}
 
 /* ── Signal: the case study ─────────────────────────
    Default (no JS, touch, reduced motion): text, then a swipeable strip of three screens.
@@ -844,4 +856,68 @@ html:not(.js) .pc-screen .frame:first-child { clip-path: none; transform: none; 
 
 @media (max-width: 600px) {
   .case-award .row-n { display: none; }
+}
+
+/* ── Plan to shipped: the software lifecycle plays as you scroll (assets/sdlc.js) ──
+   The stage pins for the section's length; each scene draws, then hands over. */
+.sdlc { position: relative; height: 230vh; background: var(--cream); }
+.sdlc-pin {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100svh - var(--nav-h));
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vh, 40px) var(--edge);
+}
+.sdlc-svg { display: block; width: min(1000px, 100%); height: auto; max-height: 100%; overflow: visible; }
+.sdlc-svg text { font: 400 13px var(--mono); fill: var(--soft); }
+.sdlc-svg [pathLength] { stroke-dasharray: 1; }
+.sdlc-svg [data-k="grow"] { transform-box: fill-box; transform-origin: 0 50%; }
+.sdlc-svg .tl text { font-size: 14px; letter-spacing: .02em; transition: fill .4s; }
+.tl-base { stroke: var(--line); stroke-width: 1; }
+.tl-fill { stroke: var(--gold); stroke-width: 3; stroke-dashoffset: 1; }
+.tl-stop circle { fill: var(--cream); stroke: rgba(21, 19, 17, .35); stroke-width: 1.5; transition: fill .4s, stroke .4s; }
+.tl-stop.past circle { fill: var(--gold); stroke: var(--gold); }
+.tl-stop.on circle { stroke: var(--gold); stroke-width: 3; }
+.sdlc-svg .tl-stop.on text { fill: var(--ink); }
+.sdlc-svg .tl-stop.past text { fill: var(--gold); }
+.sdlc-svg .ln { fill: none; stroke: rgba(21, 19, 17, .7); stroke-width: 1.5; }
+.sdlc-svg .ln.soft { stroke: rgba(21, 19, 17, .25); }
+.sdlc-svg .card { fill: var(--cream); stroke: rgba(21, 19, 17, .55); stroke-width: 1.2; }
+.sdlc-svg .bar { fill: rgba(21, 19, 17, .55); }
+.sdlc-svg .bar.soft { fill: rgba(21, 19, 17, .2); }
+.sdlc-svg .bar.g { fill: var(--gold); }
+.sdlc-svg .dot { fill: rgba(21, 19, 17, .3); }
+.sdlc-svg .editor, .sdlc-svg .screen { fill: var(--ink); }
+.sdlc-svg .dot-d { fill: rgba(239, 232, 220, .25); }
+.sdlc-svg .code { fill: rgba(239, 232, 220, .55); }
+.sdlc-svg .code.g { fill: var(--gold-l); }
+.sdlc-svg .gutter { font-size: 11px; fill: rgba(239, 232, 220, .3); }
+.sdlc-svg .ck-ring { fill: none; stroke: rgba(21, 19, 17, .3); stroke-width: 1.5; }
+.sdlc-svg .ck { fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.sdlc-svg .mono { font-size: 14px; fill: var(--ink); }
+.sdlc-svg .mono.soft { fill: var(--soft); }
+.sdlc-svg .mono.gold { fill: var(--gold); }
+.sdlc-svg .node { fill: var(--cream); stroke: rgba(21, 19, 17, .6); stroke-width: 1.5; }
+.sdlc-svg .packet { fill: var(--gold); }
+.sdlc-svg .logo { font: 500 64px var(--mono); fill: var(--gold-l); }
+.sdlc-svg .app { transform-origin: 500px 310px; }
+.sdlc-svg .app-win { fill: #f7f2ea; stroke: rgba(21, 19, 17, .7); stroke-width: 1.5; }
+.sdlc-svg .side { fill: rgba(21, 19, 17, .05); }
+.sdlc-svg .kpi { fill: var(--cream); stroke: rgba(21, 19, 17, .18); }
+.sdlc-svg .num { font-size: 20px; }
+.sdlc-svg .chart { fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+/* Without scripts, show only the finished app */
+html:not(.js) .sdlc { height: auto; }
+html:not(.js) .sdlc-pin { position: static; height: auto; padding-block: var(--band) 0; }
+html:not(.js) .sdlc .layer:not([data-final]) { display: none; }
+html:not(.js) .tl-fill { stroke-dashoffset: 0; }
+@media (max-width: 600px) {
+  /* The graphic is ~1/3 scale on a phone, so its labels get bigger in its own units */
+  .sdlc { height: 200vh; }
+  .sdlc-svg .tl text { font-size: 30px; }
+  .sdlc-svg .mono { font-size: 24px; }
+  .sdlc-svg .num { font-size: 32px; }
+  .sdlc-svg .logo { font-size: 84px; }
+  .sdlc-svg .trail { display: none; }
 }
