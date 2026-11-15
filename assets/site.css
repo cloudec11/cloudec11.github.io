@@ -1,11 +1,11 @@
 /* eric-chen.ca
    Cream paper, near-black ink, one muted gold.
-   One text face (Jost). The serif (Bodoni Moda) is reserved for the name alone. */
+   One text face (Jost). The monospace (Geist Mono) is reserved for the name alone. */
 
 :root {
   --cream: #efe8dc;
   --ink: #151311;
-  --soft: #564e44;
+  --soft: #4b443b;
   --gold: #7a5f30;
   --gold-l: #c8a46a;
   --on-ink: #d3cbbe;
@@ -13,7 +13,7 @@
   --line: rgba(21, 19, 17, .2);
   --line-d: rgba(239, 232, 220, .2);
 
-  --serif: "Bodoni Moda", "Bodoni MT", Didot, "Times New Roman", serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --sans: Jost, "Century Gothic", system-ui, sans-serif;
 
   --edge: clamp(20px, 5vw, 72px);
@@ -103,17 +103,18 @@ i { font-style: normal; }
 .nav::before {
   content: "";
   position: absolute;
-  inset: auto 0 0 0;
+  inset: auto 0 -1px 0;
   z-index: 1;
-  height: 1px;
+  height: 3px;
   background: var(--gold);
-  transform: scaleX(0);
+  transform: scaleX(var(--read, 0));
   transform-origin: 0 50%;
 }
+/* Where scroll timelines exist the browser drives it; elsewhere site.js sets --read */
 @supports (animation-timeline: scroll()) {
   .nav::before { animation: grow linear both; animation-timeline: scroll(root); }
 }
-@keyframes grow { to { transform: scaleX(1); } }
+@keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 .mark { display: inline-flex; align-items: center; min-height: 44px; }
 .nav ul { display: flex; gap: clamp(20px, 3vw, 40px); }
@@ -155,6 +156,13 @@ i { font-style: normal; }
 .btn-light::before { background: var(--cream); }
 .btn-light::after { background: var(--ink); }
 .btn-light:hover, .btn-light:focus-visible { color: var(--cream); }
+/* Copy-email button: both labels share one cell so the width never jumps; the new one rolls up */
+.btn-roll { display: grid; overflow: hidden; }
+.btn-roll > span { grid-area: 1 / 1; text-align: center; transition: transform .55s var(--out), opacity .4s; }
+.btn-roll > span + span { transform: translateY(110%); opacity: 0; }
+.btn.is-copied .btn-roll > span:first-child { transform: translateY(-110%); opacity: 0; }
+.btn.is-copied .btn-roll > span + span { transform: none; opacity: 1; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 .tlink {
   position: relative;
@@ -185,16 +193,31 @@ i { font-style: normal; }
   justify-content: space-between;
   padding-bottom: clamp(32px, 6vh, 64px);
 }
-.hero-top { container-type: inline-size; padding-top: clamp(20px, 4vh, 44px); }
+.hero-top {
+  container-type: inline-size;
+  padding-top: clamp(20px, 4vh, 44px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+/* Signal in the noise: a dot-matrix scope under the name (assets/field.js) */
+.hero-field {
+  flex: 1;
+  min-height: 140px;
+  margin-top: clamp(16px, 3vh, 32px);
+  position: relative;
+  animation: fade 1.6s 1s ease-out backwards;
+}
+.hero-field canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero-name {
-  font: 400 20cqi/.8 var(--serif);
+  font: 400 17.4cqi/.86 var(--mono);
   letter-spacing: -.035em;
   text-transform: uppercase;
   white-space: nowrap;
   text-align: center;
   margin-inline: -.02em;
 }
-.hero-name .w { display: inline-block; overflow: clip; overflow-clip-margin: .04em; padding-block: .03em; }
+.hero-name .w { display: inline-block; overflow: clip; overflow-clip-margin: .04em; padding-block: .12em; margin-block: -.09em; }
 .hero-name i { display: inline-block; animation: letter 1.2s calc(var(--i) * 55ms + 80ms) var(--out) backwards; }
 @keyframes letter { from { transform: translateY(108%); } }
 /* The name eases back as the page starts to scroll */
@@ -230,7 +253,7 @@ i { font-style: normal; }
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   column-gap: clamp(32px, 8vw, 128px);
   align-items: end;
-  padding-top: clamp(40px, 8vh, 96px);
+  padding-top: clamp(28px, 4vh, 48px);
   position: relative;
   background: var(--cream);
 }
@@ -297,7 +320,7 @@ h2 {
   background: var(--line);
 }
 .row h3 { font-size: clamp(26px, 2.9vw, 42px); line-height: 1.08; letter-spacing: -.015em; }
-.row-body p, .points li, .points-plain, .skills dd { color: var(--soft); }
+.row-body p, .points li, .skills dd { color: var(--soft); }
 .row-meta { display: flex; flex-direction: column; gap: 2px; color: var(--soft); }
 .row-meta .hl { color: var(--gold); }
 
@@ -305,13 +328,11 @@ h2 {
 .proj { grid-template-columns: 40px minmax(0, 1.05fr) minmax(0, 1.25fr) minmax(0, .8fr); }
 .row-n { color: var(--soft); padding-top: .9em; }
 .proj h3 a {
-  display: inline-flex;
-  align-items: baseline;
-  gap: .35em;
+  display: inline-block;
   transition: transform .6s var(--out), color .4s;
 }
 .proj h3 a::after { content: ""; position: absolute; inset: 0; }
-.proj h3 .ico { width: .42em; height: .42em; opacity: 0; transform: translate(-8px, 8px); }
+.proj h3 .ico { display: inline; width: .42em; height: .42em; margin-left: .3em; vertical-align: .12em; opacity: 0; transform: translate(-8px, 8px); }
 .proj h3 a:focus-visible { outline: none; }
 .proj h3 a:focus-visible::after { outline: 2px solid var(--ring); outline-offset: -2px; }
 .row-body p { max-width: 46ch; }
@@ -322,28 +343,46 @@ h2 {
 .row > * { transition: opacity .5s var(--out); }
 
 @media (hover: hover) and (min-width: 861px) {
-  /* Pointer devices: screenshots leave the rows and follow the cursor instead */
-  .peek-on .shot { display: none; }
   .projects:hover .proj:not(:hover) > * { opacity: .32; }
   .proj:hover h3 a { transform: translateX(14px); }
   .proj:hover h3 .ico { opacity: 1; transform: none; }
-  .proj:hover .row-n { color: var(--gold); }
+  .proj:hover .row-n, .proj.is-active .row-n { color: var(--gold); }
 }
 
-.peek {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 40;
-  width: min(420px, 32vw);
-  aspect-ratio: 16 / 10;
-  pointer-events: none;
-  overflow: hidden;
-  clip-path: inset(50% 0 50% 0);
-  transition: clip-path .6s var(--out);
-  will-change: transform, clip-path;
+/* Wide pointer screens: screenshots leave the rows for a docked preview column
+   that sticks beside the list, so it never sits over a row's text or links. */
+.peek { display: none; }
+@media (hover: hover) and (min-width: 1100px) {
+  .peek-on .shot { display: none; }
+  .peek-on .projects {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 36%);
+    column-gap: clamp(32px, 4vw, 64px);
+  }
+  .peek-on .projects > .proj {
+    grid-column: 1;
+    grid-template-columns: 40px minmax(0, .8fr) minmax(0, 1.2fr);
+    row-gap: 14px;
+  }
+  .peek-on .proj .row-meta { grid-column: 3; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0 18px; }
+  .peek-on .proj .row-meta .tlink { margin-top: 0; }
+  .peek-on .peek {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--nav-h) + clamp(28px, 4.4vh, 44px));
+    margin-top: clamp(28px, 4.4vh, 44px);
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--ink);
+    border: 1px solid var(--line);
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 1.2s var(--out);
+  }
+  .peek-on .peek.in { clip-path: inset(0); }
 }
-.peek.on { clip-path: inset(0); }
 /* Each new image wipes up over the last one; the old one resets once covered */
 .peek > * {
   position: absolute;
@@ -437,6 +476,57 @@ h2 {
   top: var(--nav-h);
   height: calc(100svh - var(--nav-h));
   padding-block: clamp(24px, 5vh, 56px);
+  align-items: start;
+  isolation: isolate;
+}
+.case.pin .screen { margin-top: clamp(28px, 4vh, 44px); }
+
+/* While pinned, a faint agent trace scrolls behind the stage and a rail fills,
+   so it reads as scrolling even though the stage itself stands still. */
+.case-bg, .case-rail { display: none; }
+.case.pin .case-bg {
+  display: block;
+  position: absolute;
+  inset: 0 calc(50% - 50vw);
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+}
+/* A ruled document being read line by line; the cited lines carry a gold band */
+.case-log {
+  font: 400 11px/32px var(--mono);
+  letter-spacing: .04em;
+  color: rgba(21, 19, 17, .3);
+  transform: translate3d(0, calc(var(--p, 0) * -1280px), 0);
+  will-change: transform;
+}
+.case-log span { display: block; height: 32px; border-bottom: 1px solid rgba(21, 19, 17, .055); }
+.case-log span::before {
+  content: attr(data-n);
+  display: inline-block;
+  width: var(--edge);
+  padding-right: 14px;
+  text-align: right;
+}
+.case-log .cite { background: rgba(122, 95, 48, .075); border-bottom-color: rgba(122, 95, 48, .22); }
+.case-log .cite::before { content: "L" attr(data-n); color: var(--gold); }
+.case.pin .case-rail {
+  display: block;
+  position: absolute;
+  top: clamp(24px, 5vh, 56px);
+  bottom: clamp(24px, 5vh, 56px);
+  right: calc(50% - 50vw + clamp(12px, 2vw, 28px));
+  width: 1px;
+  background: var(--line);
+}
+.case-rail i {
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: scaleY(var(--p, 0));
+  transform-origin: 50% 0;
 }
 .case.pin .case-title { font-size: clamp(48px, 5.2vw, 84px); }
 .case.pin .steps li { padding-block: 10px; }
@@ -511,9 +601,10 @@ h2 {
   height: 1px;
   background: var(--gold);
 }
-.skills > .row { grid-template-columns: minmax(0, .7fr) minmax(0, 3fr); padding-block: 24px; }
+/* Skills share the role grid so their lists start on the same edge as the school name */
+.skills > .row { grid-template-columns: minmax(0, .7fr) minmax(0, 1.1fr) minmax(0, 1.9fr); padding-block: 24px; }
 .skills dt { color: var(--gold); padding-top: .3em; }
-.skills dd { max-width: 70ch; }
+.skills dd { grid-column: 2 / -1; max-width: 70ch; }
 
 /* ── Scroll reveal (only when JS is running) ─────── */
 .js [data-reveal] > * {
@@ -561,14 +652,14 @@ h2 {
 .foot > .wrap { container-type: inline-size; }
 .foot-name {
   margin-top: clamp(64px, 12vh, 128px);
-  font: 400 20cqi/.8 var(--serif);
+  font: 400 17.4cqi/.86 var(--mono);
   letter-spacing: -.035em;
   text-transform: uppercase;
   white-space: nowrap;
   text-align: center;
   color: var(--gold-l);
 }
-.foot-name .w { display: inline-block; overflow: clip; overflow-clip-margin: .04em; padding-block: .03em; }
+.foot-name .w { display: inline-block; overflow: clip; overflow-clip-margin: .04em; padding-block: .12em; margin-block: -.09em; }
 .foot-name i { display: inline-block; }
 .js .foot-name i { transform: translateY(108%); transition: transform 1.3s calc(var(--i) * 60ms) var(--out); }
 .js .foot-name.in i { transform: none; }
@@ -612,6 +703,7 @@ h2 {
   .role .row-meta { padding-top: 0; flex-direction: row; gap: 0; }
   .role .row-meta span + span::before { content: "/"; margin-inline: .7em; color: var(--gold); }
   .skills > .row { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
+  .skills dd { grid-column: auto; }
 
   .foot-grid { grid-template-columns: minmax(0, 1fr); row-gap: 56px; }
 }
@@ -622,10 +714,10 @@ h2 {
   .nav-wide { display: none; }
 
   .hero { min-height: 0; }
-  .hero-name { font-size: 33cqi; line-height: .84; white-space: normal; text-align: left; }
+  .hero-name { font-size: 38cqi; line-height: .9; white-space: normal; text-align: left; }
   .hero-name .w { display: block; width: fit-content; }
   .hero-meta { flex-direction: column; gap: 2px; }
-  .hero-row { padding-top: 36px; }
+  .hero-row { padding-top: 28px; }
   .hero h1 { font-size: 34px; max-width: none; }
   .btn { width: 100%; }
 

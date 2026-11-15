@@ -1,5 +1,5 @@
 /* Nib pressure: letters of the name thicken under the cursor like pen pressure,
-   then dry back to rest. Rest state = wght 400, opsz 96 (the static look). */
+   then dry back to rest. Rest state = wght 400 (the static look). */
 (() => {
   const name = document.querySelector('.hero-name');
   if (!name || !(window.CSS && CSS.supports('font-variation-settings', '"wght" 400'))) return;
@@ -11,8 +11,7 @@
   const area = name.closest('section') || name.parentElement;
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 861px)');
 
-  const W0 = 400, W1 = 860;          // weight at rest / full pressure
-  const O1 = 22;                      // opsz at full pressure
+  const W0 = 400, W1 = 800;          // weight at rest / full pressure
   const ATTACK = .08, DECAY = .3;     // smoothing time constants, s (~1s to dry)
   const COMP = .65;                  // share of width growth cancelled by scaleX
   const DROP = .018;                  // max downward press, em (~2.5% of cap height)
@@ -20,7 +19,7 @@
   const p = new Float32Array(n);      // current pressure 0..1
   const tgt = new Float32Array(n);
   const grow = new Float32Array(n).fill(1); // width ratio at full pressure
-  let O0 = 96, px = 0, py = 0, inside = false, raf = 0, last = 0;
+  let px = 0, py = 0, inside = false, raf = 0, last = 0;
   let ready = false, onScreen = true, wave = -1;
 
   const set = (el, k, v) => el.style.setProperty(k, v);
@@ -28,7 +27,6 @@
   function paint(i) {
     const q = p[i], el = L[i];
     set(el, '--w', (W0 + (W1 - W0) * q).toFixed(1));
-    set(el, '--o', (O0 + (O1 - O0) * q).toFixed(2));
     set(el, '--s', Math.pow(1 / (1 + (grow[i] - 1) * q), COMP).toFixed(4));
     set(el, '--y', (DROP * q).toFixed(4) + 'em');
   }
@@ -36,12 +34,11 @@
   // Lock every letter box at its rest width (in em, so it scales with cqi type)
   function measure() {
     const cs = getComputedStyle(name), fs = parseFloat(cs.fontSize);
-    O0 = Math.min(96, Math.max(6, fs));
     const zoom = name.getBoundingClientRect().width / name.offsetWidth || 1; // scroll recede scale
     name.classList.add('is-measuring');
-    L.forEach((el) => { set(el, '--w', W0); set(el, '--o', O0); });
+    L.forEach((el) => set(el, '--w', W0));
     const rest = L.map((el) => el.getBoundingClientRect().width / zoom);
-    L.forEach((el) => { set(el, '--w', W1); set(el, '--o', O1); });
+    L.forEach((el) => set(el, '--w', W1));
     L.forEach((el, i) => { grow[i] = el.getBoundingClientRect().width / zoom / rest[i]; });
     name.classList.remove('is-measuring');
     L.forEach((el, i) => { el.style.width = (rest[i] / fs).toFixed(5) + 'em'; paint(i); });
@@ -99,8 +96,8 @@
 
   // Wait for the variable font and for the entrance animation (~1.67s) to finish
   const fonts = document.fonts ? Promise.all([
-    document.fonts.load('400 1em "Bodoni Moda"'),
-    document.fonts.load('900 1em "Bodoni Moda"'),
+    document.fonts.load('300 1em "Geist Mono"'),
+    document.fonts.load('800 1em "Geist Mono"'),
   ]).catch(() => {}) : Promise.resolve();
   const entrance = new Promise((r) => setTimeout(r, Math.max(0, 1700 - performance.now())));
 

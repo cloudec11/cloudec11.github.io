@@ -9,16 +9,19 @@
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
   // 1. Reveals. Rows rise, headings wipe, numbers count, the footer name builds.
-  const counted = new WeakSet();
+  //    Anything that leaves through the bottom of the screen (you scrolled back up past it)
+  //    resets, so it plays again on the way back down.
+  const runs = new WeakMap(); // counter element -> current run id
   const count = (row) => {
     row.querySelectorAll('.num').forEach((el) => {
-      if (counted.has(el)) return;
-      counted.add(el);
       const end = +el.dataset.n, b = el.parentElement;
       if (still) { b.classList.add('lit'); return; }
+      const id = (runs.get(el) || 0) + 1;
+      runs.set(el, id);
       el.style.minWidth = `${String(end).length}ch`;
       const t0 = performance.now(), dur = 1300 + Math.min(end, 300) * 2;
       const step = (t) => {
+        if (runs.get(el) !== id) return;
         const k = clamp((t - t0) / dur, 0, 1);
         el.textContent = Math.round(end * (1 - Math.pow(2, -10 * k)) / (1 - Math.pow(2, -10)));
         if (k < 1) requestAnimationFrame(step);
@@ -28,10 +31,20 @@
       requestAnimationFrame(step);
     });
   };
+  const timers = new WeakMap();
   const show = (el) => {
     el.classList.add('in');
     count(el);
-    setTimeout(() => el.classList.add('done'), 1400);
+    timers.set(el, setTimeout(() => el.classList.add('done'), 1400));
+  };
+  const hide = (el) => {
+    clearTimeout(timers.get(el));
+    el.classList.remove('in', 'done');
+    el.querySelectorAll('.num').forEach((n) => {
+      runs.set(n, (runs.get(n) || 0) + 1); // cancels a count in flight
+      n.textContent = '0';
+      n.parentElement.classList.remove('lit');
+    });
   };
   const items = document.querySelectorAll('[data-reveal], .foot-name');
   if (still || !('IntersectionObserver' in window)) {
@@ -39,12 +52,61 @@
   } else {
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        show(e.target);
-        io.unobserve(e.target);
+        const el = e.target;
+        if (e.isIntersecting && !el.classList.contains('in')) show(el);
       }
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.05 });
-    items.forEach((el) => io.observe(el));
+    // Reset only once fully off screen below, so nothing visibly blinks out.
+    const out = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting && e.target.classList.contains('in') && e.boundingClientRect.top >= e.rootBounds.bottom) hide(e.target);
+      }
+    }, { threshold: 0 });
+    items.forEach((el) => { io.observe(el); out.observe(el); });
+  }
+
+  // Copy email: the buttons copy the address and say so; mailto stays the no-JS fallback.
+  const status = document.getElementById('copy-status');
+  const copyText = async (text) => {
+    try { await navigator.clipboard.writeText(text); return true; } catch {}
+    const ta = Object.assign(document.createElement('textarea'), { value: text });
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.append(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch {}
+    ta.remove();
+    return ok;
+  };
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    const mail = btn.getAttribute('href').replace(/^mailto:/, '');
+    btn.setAttribute('role', 'button');
+    btn.setAttribute('aria-label', `Copy email address ${mail}`);
+    btn.innerHTML = '<span class="btn-roll"><span>Copy email</span><span aria-hidden="true">Email copied</span></span>';
+    let t = 0;
+    btn.addEventListener('click', async (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+      if (!(await copyText(mail))) { location.href = btn.href; return; }
+      btn.classList.add('is-copied');
+      if (status) status.textContent = `${mail} copied to clipboard`;
+      clearTimeout(t);
+      t = setTimeout(() => { btn.classList.remove('is-copied'); if (status) status.textContent = ''; }, 2400);
+    });
+  });
+
+  // Reading progress fallback for browsers without scroll timelines.
+  if (!CSS.supports?.('animation-timeline: scroll()')) {
+    const nav = document.querySelector('.nav');
+    let tick = false;
+    const read = () => {
+      tick = false;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      nav?.style.setProperty('--read', max > 0 ? (scrollY / max).toFixed(4) : 0);
+    };
+    addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(read); } }, { passive: true });
+    read();
   }
 
   // 2. Demo videos: inline in Signal's screen, in a dialog for other projects.
@@ -98,6 +160,14 @@
     const frames = [...kase.querySelectorAll('.frame')];
     const frameFor = [0, 1, 1, 2];
     const stage = kase.querySelector('.case-stage');
+    // Line numbers that scroll in the gutter behind the pinned stage. The cited lines are gold.
+    const log = kase.querySelector('.case-log');
+    if (log) {
+      const cited = new Set([12, 18, 31, 47]);
+      let html = '';
+      for (let i = 1; i <= 80; i++) html += `<span${cited.has(i) ? ' class="cite"' : ''} data-n="${i * 4 + 364}"></span>`;
+      log.innerHTML = html;
+    }
     const wantPin = matchMedia('(hover: hover) and (min-width: 1000px) and (min-height: 640px)');
     let cur = -1, ticking = false, on = false;
     const set = (i) => {
@@ -113,6 +183,7 @@
       const run = kase.offsetHeight - stage.offsetHeight;
       const top = parseFloat(getComputedStyle(stage).top) || 0;
       const p = clamp((top - r.top) / run, 0, 0.999);
+      kase.style.setProperty('--p', p.toFixed(4));
       set(Math.floor(p * steps.length));
     };
     const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
@@ -142,13 +213,14 @@
     addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(mode, 150); }, { passive: true });
   }
 
-  // 5. Project previews follow the cursor. Rows with several screens cycle through them.
+  // 5. Project previews: a docked column beside the list shows the hovered (or focused) row.
+  //    Rows with several screens cycle through them. Narrower or touch screens keep inline shots.
   const peek = document.querySelector('.peek');
-  const rows = document.querySelectorAll('.proj[data-shots], .proj[data-card]');
+  const rows = [...document.querySelectorAll('.proj[data-shots], .proj[data-card]')];
+  const wide = matchMedia('(hover: hover) and (min-width: 1100px)');
   if (peek && rows.length) {
-    root.classList.add('peek-on');
     const sets = new Map();
-    let z = 1;
+    let z = 1, active = null, cycle = 0, idx = 0;
     rows.forEach((row) => {
       const els = [];
       if (row.dataset.card) {
@@ -164,57 +236,47 @@
           const img = new Image();
           img.decoding = 'async';
           img.alt = '';
-          img.dataset.src = src;
+          img.src = src;
           els.push(img);
         });
       }
       els.forEach((el) => peek.append(el));
       sets.set(row, els);
     });
-    const load = () => sets.forEach((els) => els.forEach((el) => { if (el.dataset.src && !el.src) el.src = el.dataset.src; }));
-    const projects = document.querySelector('.projects');
-    projects?.addEventListener('pointerenter', load, { once: true });
-
-    let x = 0, y = 0, tx = 0, ty = 0, raf = 0, active = null, cycle = 0, idx = 0;
-    const tick = () => {
-      x += (tx - x) * 0.14;
-      y += (ty - y) * 0.14;
-      const tilt = clamp((tx - x) * 0.05, -6, 6);
-      peek.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${tilt}deg)`;
-      raf = active || Math.abs(tx - x) > 0.5 || Math.abs(ty - y) > 0.5 ? requestAnimationFrame(tick) : 0;
-    };
-    const place = (e) => {
-      const w = peek.offsetWidth, h = peek.offsetHeight;
-      tx = Math.min(e.clientX + 28, innerWidth - w - 16);
-      ty = clamp(e.clientY - h / 2, 16, innerHeight - h - 16);
-    };
     const reveal = (el) => {
       peek.querySelectorAll('.on').forEach((o) => { if (o !== el) o.classList.remove('on'); });
       el.style.zIndex = ++z;
       el.classList.add('on');
     };
     const stop = () => { clearInterval(cycle); cycle = 0; };
-    const leave = () => { active = null; stop(); peek.classList.remove('on'); };
+    const select = (row) => {
+      if (row === active) return;
+      active?.classList.remove('is-active');
+      active = row;
+      row.classList.add('is-active');
+      const els = sets.get(row);
+      idx = 0;
+      reveal(els[0]);
+      stop();
+      if (els.length > 1) cycle = setInterval(() => { idx = (idx + 1) % els.length; reveal(els[idx]); }, 1700);
+    };
     rows.forEach((row) => {
-      row.addEventListener('pointerenter', (e) => {
-        if (!pointer.matches || e.pointerType === 'touch') return;
-        load();
-        place(e);
-        if (!active) { x = tx; y = ty; }
-        active = row;
-        const els = sets.get(row);
-        idx = 0;
-        reveal(els[0]);
-        stop();
-        if (els.length > 1) cycle = setInterval(() => { idx = (idx + 1) % els.length; reveal(els[idx]); }, 1700);
-        peek.classList.add('on');
-        if (!raf) raf = requestAnimationFrame(tick);
-      });
-      row.addEventListener('pointermove', (e) => { if (active === row) place(e); });
-      row.addEventListener('pointerleave', () => { if (active === row) leave(); });
+      row.addEventListener('pointerenter', (e) => { if (wide.matches && e.pointerType !== 'touch') select(row); });
+      row.addEventListener('focusin', () => { if (wide.matches) select(row); });
     });
-    addEventListener('scroll', () => { if (active) leave(); }, { passive: true });
-    document.addEventListener('visibilitychange', () => { if (document.hidden && active) leave(); });
+    // Leaving the list keeps the last preview on screen but stops it cycling.
+    document.querySelector('.projects')?.addEventListener('pointerleave', stop);
+    const mode = () => {
+      root.classList.toggle('peek-on', wide.matches);
+      if (wide.matches && !active) select(rows[0]);
+      if (!wide.matches) stop();
+    };
+    mode();
+    wide.addEventListener('change', mode);
+    new IntersectionObserver(([e], o) => {
+      if (e.isIntersecting) { peek.classList.add('in'); o.disconnect(); }
+    }, { rootMargin: '0px 0px -12% 0px' }).observe(peek.parentElement);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
   }
 
   // 6. Buttons lean a few pixels toward the cursor.
