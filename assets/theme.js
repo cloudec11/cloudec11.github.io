@@ -69,4 +69,41 @@
   document.addEventListener('click', (e) => { if (!menu.hidden && !holder.contains(e.target)) toggle(false); });
   holder.addEventListener('focusout', (e) => { if (!menu.hidden && !holder.contains(e.relatedTarget)) toggle(false); });
   paint();
+
+  // First-visit hint: a hand-drawn arrow up to the swatch, "Try a colour scheme". It shows
+  // once the name has built, only at the top of the page. Scrolling hides it for this visit;
+  // opening the menu hides it for good (remembered in localStorage).
+  let seen = false;
+  try { seen = localStorage.getItem('theme-hint') === 'done'; } catch {}
+  if (!seen) {
+    const hint = document.createElement('span');
+    hint.className = 'theme-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    hint.innerHTML = '<span class="theme-hint-t">Try a colour scheme</span>' +
+      '<svg viewBox="0 0 30 34" fill="none"><path d="M3 31c10 1 18-6 20-25" pathLength="1"/><path d="M17 11l6-6 5 7" pathLength="1"/></svg>';
+    holder.append(hint);
+    // Aim the arrow's tip (6px in from the hint's right edge) at the centre of the swatch
+    const aim = () => {
+      const s = btn.querySelector('.theme-sw')?.getBoundingClientRect();
+      if (!s) return;
+      const h = holder.getBoundingClientRect();
+      hint.style.right = `${Math.round(h.right - (s.left + s.width / 2) - 6)}px`;
+    };
+    aim();
+    addEventListener('resize', aim, { passive: true });
+    let gone = false;
+    const hide = (forever) => {
+      if (forever) { try { localStorage.setItem('theme-hint', 'done'); } catch {} }
+      if (gone) return;
+      gone = true;
+      removeEventListener('scroll', onScroll);
+      removeEventListener('resize', aim);
+      hint.classList.remove('is-on');
+      setTimeout(() => hint.remove(), 500);
+    };
+    const onScroll = () => { if (scrollY > 40) hide(false); };
+    addEventListener('scroll', onScroll, { passive: true });
+    btn.addEventListener('click', () => hide(true));
+    setTimeout(() => { if (!gone && scrollY <= 40) hint.classList.add('is-on'); else hide(false); }, 2400);
+  }
 })();

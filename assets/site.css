@@ -261,6 +261,22 @@ i { font-style: normal; }
 .theme-menu button { width: 100%; color: var(--soft); transition: color .3s; }
 .theme-menu button:hover, .theme-menu button[aria-pressed="true"] { color: var(--ink); }
 .theme-menu button[aria-pressed="true"]::after { content: ""; width: 5px; height: 5px; margin-left: auto; border-radius: 50%; background: var(--gold); }
+/* First-visit hint (assets/theme.js): a hand-drawn arrow curling up to the swatch. It draws
+   in, bobs gently, and fades out on scroll or once the menu is opened. */
+.theme-hint {
+  position: absolute; top: calc(100% - 6px); right: 12px;
+  display: flex; align-items: flex-end; gap: 4px;
+  color: var(--gold); pointer-events: none; white-space: nowrap;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .45s var(--out), transform .6s var(--out);
+}
+.theme-hint.is-on { opacity: 1; transform: none; animation: hint-bob 2.4s 1.2s ease-in-out infinite; }
+.theme-hint-t { font: 400 13px/1 var(--sans); letter-spacing: .02em; padding-bottom: 2px; }
+.theme-hint svg { width: 26px; height: 30px; flex: none; overflow: visible; }
+.theme-hint path { stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.theme-hint.is-on path { transition: stroke-dashoffset .7s var(--out) .15s; stroke-dashoffset: 0; }
+.theme-hint.is-on path + path { transition-delay: .6s; }
+@keyframes hint-bob { 50% { transform: translateY(-4px); } }
 
 /* ── Button: ink fills from below on hover ───────── */
 .btn {
@@ -993,6 +1009,8 @@ html:not(.js) .proj-more { display: none; }
   .nav-cv { margin-left: 12px; padding-left: 12px; background-position-x: 12px; }
   .theme { margin-left: 14px; }
   .theme-label { display: none; }
+  .theme-hint { right: 10px; }
+  .theme-hint-t { font-size: 12px; }
 
   .hero { min-height: 0; }
   .hero-top { padding-top: 16px; }
