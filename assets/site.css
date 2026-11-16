@@ -219,6 +219,18 @@ i { font-style: normal; }
 }
 .nav li a:hover, .nav li a:focus-visible, .mark:hover { background-size: 100% 1px; }
 .nav-row > nav { margin-left: auto; }
+/* Name and resume share the left: the resume is a document, not a place on this page */
+.nav-id { display: flex; align-items: center; }
+.nav-cv {
+  display: inline-flex; align-items: center; gap: 7px; min-height: 44px;
+  margin-left: 18px; padding-left: 18px; position: relative;
+  color: var(--gold);
+  background: linear-gradient(currentColor, currentColor) 18px calc(50% + 13px) / 0 1px no-repeat;
+  transition: background-size .45s var(--out);
+}
+.nav-cv::before { content: ""; position: absolute; left: 0; top: 50%; height: 14px; width: 1px; margin-top: -7px; background: var(--line); }
+.nav-cv:hover, .nav-cv:focus-visible { background-size: calc(100% - 18px) 1px; }
+.nav-cv:hover .ico { transform: translate(2px, -2px); }
 
 /* Colour scheme picker (assets/theme.js): a swatch that opens a short list */
 .theme { position: relative; margin-left: clamp(16px, 2.4vw, 32px); }
@@ -390,10 +402,23 @@ i { font-style: normal; }
 .hero-side > p:first-child { color: var(--soft); max-width: 38ch; }
 .fact { color: var(--gold); }
 .fact span { color: var(--soft); }
-.hero-side .btn { margin-top: 10px; }
+.hero-actions { display: flex; gap: 10px; margin-top: 10px; }
+/* GitHub and LinkedIn: outlined squares beside the copy button; the fill rises on hover */
+.btn-line { padding: 0; width: 56px; gap: 10px; color: var(--ink); }
+.btn-line::before { background: transparent; }
+.btn-line::after { background: var(--ink); }
+.btn-line:hover, .btn-line:focus-visible { color: var(--cream); }
+.btn-line svg { width: 18px; height: 18px; flex: none; }
+.btn-line .btn-lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.hero-lead { display: flex; flex-direction: column; gap: clamp(16px, 2.4vh, 24px); }
+.hero-status { display: inline-flex; align-items: center; gap: 12px; color: var(--gold); }
+/* A slow pulse: the one live signal on the page */
+.pulse { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex: none; }
+.pulse::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: var(--gold); animation: pulse 2.4s var(--out) infinite; }
+@keyframes pulse { from { transform: scale(1); opacity: .6; } to { transform: scale(3.2); opacity: 0; } }
 
 [data-enter] > *, .hero-side > * { animation: rise 1.1s var(--out) backwards; }
-[data-enter] > h1 { animation-delay: .45s; }
+[data-enter] > .hero-lead { animation-delay: .45s; }
 .hero-side > :nth-child(1) { animation-delay: .6s; }
 .hero-side > :nth-child(2) { animation-delay: .7s; }
 .hero-side > :nth-child(3) { animation-delay: .8s; }
@@ -964,15 +989,16 @@ html:not(.js) .proj-more { display: none; }
   body { font-size: 16.5px; }
   .nav-wide { display: none; }
   .nav ul { gap: 18px; }
-  .nav li a, .mark { letter-spacing: .12em; }
-  .theme { margin-left: 18px; }
+  .nav li a, .mark, .nav-cv { letter-spacing: .12em; }
+  .nav-cv { margin-left: 12px; padding-left: 12px; background-position-x: 12px; }
+  .theme { margin-left: 14px; }
   .theme-label { display: none; }
 
   .hero { min-height: 0; }
   .hero-top { padding-top: 16px; }
   /* Phones keep the essentials: name, pitch, one button. The term map and the repeated
      address are left to bigger screens. */
-  .hero-field, .hero-mail { display: none; }
+  .hero-field, .hero-more { display: none; }
   .hero-name { font-size: 29cqi; line-height: .95; white-space: normal; text-align: left; }
   .hero-name .w { display: block; width: fit-content; }
   .hero-meta { flex-direction: column; gap: 2px; }
@@ -980,7 +1006,10 @@ html:not(.js) .proj-more { display: none; }
   .hero h1 { font-size: 30px; max-width: none; }
   /* The button comes straight after the pitch; the award and resume follow it */
   .hero-side { gap: 18px; }
-  .hero-side .btn { order: 1; margin-top: 0; }
+  .hero-actions { order: 1; margin-top: 0; display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .hero-actions [data-copy] { grid-column: 1 / -1; }
+  .btn-line { width: auto; padding: 0 16px; }
+  .btn-line .btn-lbl { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
   .hero-side .fact { order: 2; }
   .hero-more { order: 3; margin-top: 0; }
   .btn { width: 100%; }
@@ -1021,12 +1050,12 @@ html:not(.js) .proj-more { display: none; }
   .case-award .row-n { display: none; }
 }
 
-/* ── Plan to shipped: the software lifecycle plays as you scroll (assets/sdlc.js) ──
-   It scrolls with the page like any other block (no pinning, nothing to scroll through):
-   the scenes play from the moment it enters the screen until it sits mid-screen. */
+/* ── Plan to shipped: how my projects ship, as a short film (assets/sdlc.js) ──
+   It scrolls with the page like any other block (no pinning) and plays by itself, about
+   13 s, once it is on screen; each scene draws, then hands over. */
 .sdlc { position: relative; background: var(--cream); padding-top: clamp(40px, 8vh, 96px); }
 .sdlc-pin { display: grid; place-items: center; padding-inline: var(--edge); }
-.sdlc-svg { display: block; width: min(860px, 100%); height: auto; max-height: 60vh; overflow: visible; }
+.sdlc-svg { display: block; width: min(880px, 100%); height: auto; max-height: 62vh; overflow: visible; }
 .sdlc-svg text { font: 400 13px var(--mono); fill: var(--soft); }
 .sdlc-svg [pathLength] { stroke-dasharray: 1; }
 .sdlc-svg [data-k="grow"] { transform-box: fill-box; transform-origin: 0 50%; }
@@ -1063,6 +1092,25 @@ html:not(.js) .proj-more { display: none; }
 .sdlc-svg .side { fill: rgb(var(--ink-rgb) / .05); }
 .sdlc-svg .kpi { fill: var(--cream); stroke: rgb(var(--ink-rgb) / .18); }
 .sdlc-svg .num { font-size: 20px; }
+.sdlc-svg .cap { font-size: 13px; letter-spacing: .04em; fill: var(--gold); }
+.sdlc-svg .card-t { font-size: 13px; fill: var(--ink); }
+.sdlc-svg .seat { fill: var(--cream); stroke: rgb(var(--ink-rgb) / .45); stroke-width: 1.2; }
+.sdlc-svg .seat.on { fill: var(--gold); stroke: var(--gold); }
+.sdlc-svg .code-t { font: 400 14px var(--mono); fill: rgb(var(--on-surf-rgb) / .8); }
+.sdlc-svg .code-t.kw { fill: var(--gold-l); }
+.sdlc-svg .code-t.c { fill: rgb(var(--on-surf-rgb) / .4); }
+.sdlc-svg .side-t { font-size: 13px; fill: var(--soft); }
+.sdlc-svg .side-t.g { fill: var(--gold); }
+/* Replay: shown once the film has played through */
+.sdlc-replay {
+  min-height: 44px; margin-top: 4px; padding: 0 4px; border: 0; background: none;
+  color: var(--gold); cursor: pointer;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat; background-position: 4px calc(50% + 11px); background-size: 0 1px;
+  transition: background-size .45s var(--out), opacity .4s;
+}
+.sdlc-replay:hover, .sdlc-replay:focus-visible { background-size: calc(100% - 8px) 1px; }
+.sdlc-replay[hidden] { display: block; visibility: hidden; opacity: 0; }
 .sdlc-svg .chart { fill: none; stroke: var(--gold); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
 /* Without scripts, show only the finished app */
 html:not(.js) .sdlc .layer:not([data-final]) { display: none; }
@@ -1070,7 +1118,10 @@ html:not(.js) .tl-fill { stroke-dashoffset: 0; }
 @media (max-width: 600px) {
   /* The graphic is ~1/3 scale on a phone, so its labels get bigger in its own units */
   .sdlc-svg .tl text { font-size: 30px; }
-  .sdlc-svg .mono { font-size: 24px; }
+  .sdlc-svg .mono { font-size: 16px; }
+  .sdlc-svg .cap { font-size: 24px; }
+  .sdlc-svg .code-t { font-size: 17px; }
+  .sdlc-svg .card-t { font-size: 14px; }
   .sdlc-svg .num { font-size: 32px; }
   .sdlc-svg .logo { font-size: 84px; }
   .sdlc-svg .trail { display: none; }

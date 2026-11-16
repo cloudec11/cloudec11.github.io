@@ -1,6 +1,11 @@
-/* Signal lift: letters of the name rise and take on the accent colour under the cursor,
-   then settle back. Audiowide has a single weight, so the effect is position and colour
-   rather than stroke. Touch screens get one slow sweep after the entrance instead. */
+/* The name is built from code, then responds to the cursor.
+   1. Built from code: each letter starts as a cycling code character in the mono face and
+      resolves into its Audiowide letter, left to right, behind a blinking caret. Audiowide
+      is not monospaced, so every letter is locked to its final width while it cycles and
+      nothing shifts.
+   2. Signal lift: letters rise and take on the accent colour under the cursor, then settle
+      back. Touch screens get one slow sweep instead.
+   Under reduced motion the name is simply there. */
 (() => {
   const name = document.querySelector('.hero-name');
   if (!name) return;
@@ -9,11 +14,48 @@
 
   const L = [...name.querySelectorAll('i')], n = L.length;
   if (!n) return;
+
+  // 1. Built from code
+  const finals = L.map((el) => el.textContent);
+  const CODE = '{}[]<>()/=;:+*#01$_&|!?%'.split('');
+  const pick = () => CODE[(Math.random() * CODE.length) | 0];
+  name.classList.add('is-coding', 'is-wait');   // hidden until the face is in and measured
+  const font = document.fonts ? document.fonts.load('1em Audiowide').catch(() => {}) : Promise.resolve();
+  const built = Promise.race([font, new Promise((r) => setTimeout(r, 1600))]).then(() => new Promise((done) => {
+    const fs = parseFloat(getComputedStyle(name).fontSize) || 1;
+    L.forEach((el) => { el.style.width = (el.getBoundingClientRect().width / fs).toFixed(4) + 'em'; });
+    L.forEach((el) => { el.classList.add('code'); el.textContent = pick(); });
+    name.classList.remove('is-wait');
+    const START = 300, STEP = 110, at = L.map((_, k) => START + k * STEP);
+    let t0 = 0, swapped = 0;
+    const tick = (t) => {
+      if (!t0) t0 = t;
+      const e = t - t0, swap = t - swapped > 55;
+      if (swap) swapped = t;
+      let front = -1;
+      L.forEach((el, k) => {
+        if (e >= at[k]) {
+          if (el.classList.contains('code')) { el.classList.remove('code'); el.textContent = finals[k]; }
+        } else {
+          if (front < 0) front = k;
+          if (swap) el.textContent = pick();
+        }
+      });
+      L.forEach((el, k) => el.classList.toggle('cur', k === front));
+      if (front >= 0) requestAnimationFrame(tick);
+      else {
+        L.forEach((el) => { el.style.width = ''; });
+        name.classList.remove('is-coding');
+        done();
+      }
+    };
+    requestAnimationFrame(tick);
+  }));
+
+  // 2. Signal lift
   const area = name.closest('section') || name.parentElement;
   const fine = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 861px)');
-
   const ATTACK = .08, DECAY = .35;    // smoothing time constants, s
-
   const p = new Float32Array(n);      // current lift 0..1
   const tgt = new Float32Array(n);
   let px = 0, py = 0, inside = false, raf = 0, last = 0;
@@ -71,11 +113,11 @@
     if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else kick();
   });
 
-  // Start once the entrance animation (~1.67s) has finished
-  setTimeout(() => {
+  // The lift starts once the name has finished building
+  built.then(() => {
     name.classList.add('is-lift');
     ready = true;
     if (!fine.matches) wave = 0;
     kick();
-  }, Math.max(0, 1700 - performance.now()));
+  });
 })();

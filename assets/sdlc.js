@@ -1,8 +1,11 @@
-/* Plan to shipped: the software lifecycle, driven by scroll. It plays as the graphic
-   scrolls up into view; progress p (0 to 1) picks the scene and how far it has drawn:
-   plan, design, build, test, deploy, then a laptop whose screen grows into a finished app.
-   Each animated element carries data-k (how it animates) and data-a (when, as a 0-1 range
-   within its scene). Under reduced motion it shows the finished app and does not move. */
+/* Plan to shipped: how my projects go from a plan to something shipped, as a short film
+   that plays by itself once the graphic is on screen (the page never waits on it):
+   planning Signal, designing the FindMySeat seat map, building Signal's agents, testing,
+   deploying for demo day, then a laptop whose screen grows into a dashboard of what shipped.
+   Progress p (0 to 1) picks the scene and how far it has drawn. Each animated element carries
+   data-k (how it animates) and data-a (when, as a 0-1 range within its scene).
+   It pauses off screen, replays when you come back down to it, and has a Replay button.
+   Under reduced motion it shows the finished dashboard and does not move. */
 (() => {
   const sec = document.querySelector('.sdlc');
   if (!sec) return;
@@ -10,21 +13,24 @@
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('force-motion');
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const ease = (u) => 1 - Math.pow(1 - u, 3);
-  const FADE = 0.025;               // scenes cross-fade over this much of the scroll
+  const DURATION = 13000;           // the whole film, ms
+  const FADE = 0.02;                // scenes cross-fade over this much of it
   const STOP = [0, 1, 2, 3, 4, 5, 5]; // scene -> timeline stop (the laptop and the app share "Ship")
 
   const scenes = [...sec.querySelectorAll('.layer')].map((g) => {
     const [a, b] = g.dataset.r.split(' ').map(Number);
     const els = [...g.querySelectorAll('[data-k]')].map((el) => {
       const [s, e] = el.dataset.a.split(' ').map(Number);
-      return { el, k: el.dataset.k, s, e, dx: +el.dataset.dx || 0, from: +el.dataset.from || 1 };
+      return { el, k: el.dataset.k, s, e, dx: +el.dataset.dx || 0, from: +el.dataset.from || 1, t: el.dataset.t || '', shown: -1 };
     });
     return { g, a, b, final: 'final' in g.dataset, els };
   });
   const stops = [...sec.querySelectorAll('.tl-stop')];
   const line = sec.querySelector('.tl-fill');
+  const replay = sec.querySelector('.sdlc-replay');
 
-  const apply = ({ el, k, dx, from }, u) => {
+  const apply = (it, u) => {
+    const { el, k, dx, from } = it;
     switch (k) {
       case 'draw': el.style.strokeDashoffset = (1 - u).toFixed(4); break;
       case 'fade': el.style.opacity = u.toFixed(3); break;
@@ -32,13 +38,15 @@
       case 'pop': el.style.opacity = u.toFixed(3); el.style.transform = `translateY(${((1 - u) * 10).toFixed(2)}px)`; break;
       case 'move': el.style.transform = `translateX(${(u * dx).toFixed(2)}px)`; break;
       case 'zoom': el.style.transform = `scale(${(from + (1 - from) * u).toFixed(4)})`; break;
+      case 'type': {                  // typed out a character at a time, linear like a keyboard
+        const n = Math.round(it.t.length * u);
+        if (n !== it.shown) { it.shown = n; el.textContent = it.t.slice(0, n); }
+        break;
+      }
     }
   };
 
-  let last = -1;
   const render = (p) => {
-    if (Math.abs(p - last) < 0.0005) return;
-    last = p;
     let current = 0;
     scenes.forEach((sc, i) => {
       if (p >= sc.a) current = i;
@@ -47,7 +55,10 @@
       if (!sc.final) o = Math.min(o, clamp((sc.b + FADE - p) / FADE, 0, 1));
       sc.g.style.opacity = o.toFixed(3);
       sc.g.style.visibility = o > 0 ? 'visible' : 'hidden';
-      if (o > 0) sc.els.forEach((e) => apply(e, ease(clamp((t - e.s) / (e.e - e.s), 0, 1))));
+      if (o > 0) sc.els.forEach((e) => {
+        const u = clamp((t - e.s) / (e.e - e.s), 0, 1);
+        apply(e, e.k === 'type' ? u : ease(u));
+      });
     });
     // Timeline: the gold line reaches each stop as its scene finishes
     const stop = STOP[current];
@@ -61,23 +72,38 @@
     });
   };
 
-  // Nothing pins: progress runs from the graphic's top entering the screen (0) to the
-  // graphic sitting centred in it (1), so it has finished while still in full view.
-  const svg = sec.querySelector('.sdlc-svg');
-  const progress = () => {
-    const r = svg.getBoundingClientRect(), vh = innerHeight;
-    const start = vh * 0.92, end = Math.max(64, (vh - r.height) / 2);
-    return start > end ? clamp((start - r.top) / (start - end), 0, 1) : 1;
-  };
-
   if (still) { render(1); return; }
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { ticking = false; render(progress()); });
+
+  // The clock: p advances with time only while the graphic is on screen and the tab is visible
+  let p = 0, raf = 0, last = 0, visible = false;
+  const frame = (now) => {
+    raf = 0;
+    p = Math.min(1, p + (now - last) / DURATION);
+    last = now;
+    render(p);
+    if (p < 1) { if (visible && !document.hidden) raf = requestAnimationFrame(frame); }
+    else if (replay) replay.hidden = false;
   };
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', onScroll, { passive: true });
-  render(progress());
+  const play = () => {
+    if (raf || p >= 1 || !visible || document.hidden) return;
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  };
+  const pause = () => { cancelAnimationFrame(raf); raf = 0; };
+  const rewind = () => { pause(); p = 0; if (replay) replay.hidden = true; render(0); };
+
+  render(0);
+  const svg = sec.querySelector('.sdlc-svg');
+  // Start once most of it is in view; leaving pauses it; leaving downward (you scrolled
+  // back up past it) rewinds it, so it plays again on the way down.
+  new IntersectionObserver(([e]) => {
+    visible = e.intersectionRatio >= 0.55;
+    if (visible) play();
+    else {
+      pause();
+      if (!e.isIntersecting && e.boundingClientRect.top > 0 && p > 0) rewind();
+    }
+  }, { threshold: [0, 0.55] }).observe(svg);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); else play(); });
+  replay?.addEventListener('click', () => { rewind(); play(); });
 })();

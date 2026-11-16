@@ -1,6 +1,17 @@
-/* Signal lift (assets/hero.js). Only active once JS adds .is-lift after the entrance. */
+/* Signal lift (assets/hero.js). Only active once JS adds .is-lift after the name is built. */
 .hero-name.is-lift .w { overflow: visible; }
 .hero-name.is-lift i {
   color: color-mix(in srgb, var(--gold) calc(var(--q, 0) * 100%), var(--ink));
   transform: translateY(calc(var(--q, 0) * -.07em));
 }
+
+/* Built from code (assets/hero.js): letters are locked to their final width while code
+   characters cycle in them, then resolve one by one behind a blinking caret. */
+.hero-name.is-coding i { animation: none; text-align: center; position: relative; }
+.hero-name.is-wait .w { visibility: hidden; }
+.hero-name i.code { font-family: var(--mono); font-weight: 400; color: var(--gold); }
+.hero-name i.cur::after {
+  content: ""; position: absolute; left: 6%; right: 6%; bottom: .06em; height: .07em;
+  background: var(--gold); animation: caret .5s steps(1) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }

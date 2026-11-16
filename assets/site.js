@@ -152,11 +152,53 @@
       panel.inert = !on;
       if (on) { warm(); set(0); play(); } else stop();
     };
+    // Closing plays out instead of snapping: the screenshots wipe back to the first, the
+    // steps lift and fade, then fold up. On wide screens the whole panel folds away and the
+    // thumbnail fades back in; on phones and tablets (where the panel's wrappers drop out of
+    // the layout) the steps fold up under the bar, and the screen hands back to the
+    // thumbnail in the same spot. A row closed because another opened still snaps shut, so
+    // the tapped row never moves.
+    let closing = false;
+    const close = () => {
+      if (closing) return;
+      if (still || !panel.animate) { open(false); return; }
+      closing = true;
+      stop();
+      set(0);
+      btn.setAttribute('aria-expanded', 'false');
+      bar.setAttribute('aria-expanded', 'false');
+      const text = panel.querySelector('.pc-text'), screen = panel.querySelector('.pc-screen');
+      const small = narrow.matches;
+      const box = small && text ? text : panel;   // what folds up
+      const from = box.offsetHeight;
+      const lift = [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-14px)' }];
+      box.style.overflow = 'hidden';
+      text?.animate(lift, { duration: 300, easing: 'cubic-bezier(.4, 0, 1, 1)', fill: 'forwards' });
+      if (!small) screen?.animate(lift, { duration: 340, delay: 70, easing: 'cubic-bezier(.4, 0, 1, 1)', fill: 'forwards' });
+      const fold = box.animate([{ height: `${from}px` }, { height: '0px' }],
+        { duration: small ? 460 : 560, delay: 140, easing: 'cubic-bezier(.65, 0, .35, 1)', fill: 'forwards' });
+      fold.onfinish = () => {
+        // Hand over to the closed layout without replaying its height transition
+        panel.style.transition = 'none';
+        if (small) row.classList.add('no-anim');
+        open(false);
+        void row.offsetHeight;
+        panel.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+        void panel.offsetHeight;
+        panel.style.transition = '';
+        box.style.overflow = '';
+        row.classList.remove('no-anim');
+        closing = false;
+        // If the panel was read from below its title, bring the row back into view
+        const top = row.getBoundingClientRect().top;
+        if (top < 64) scrollBy({ top: top - 72, behavior: 'smooth' });
+      };
+    };
     panel.inert = true;
     openers.set(row, open);
     row.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || !row.classList.contains('is-open')) return;
-      open(false);
+      close();
       btn.focus();
     });
     // A click anywhere on the row toggles it, except on its links and controls, inside
@@ -177,6 +219,7 @@
       }, { rootMargin: '300px 0px' }).observe(row);
     }
     btn.addEventListener('click', () => {
+      if (closing) return;
       const on = !row.classList.contains('is-open');
       // Keep the page still while rows change size: no scroll anchoring for the toggle,
       // and a row closing above this one collapses at once with the scroll compensated,
@@ -194,8 +237,8 @@
       });
       const shift = row.getBoundingClientRect().top - before;
       if (shift) scrollBy({ top: shift, behavior: 'instant' });
-      open(on);
-      if (!on) return;
+      if (!on) { close(); return; }
+      open(true);
       const behavior = still ? 'instant' : 'smooth', navH = 64;
       if (narrow.matches) {
         // The panel opens right under the bar that was tapped, so the page only moves when
