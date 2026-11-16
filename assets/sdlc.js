@@ -10,7 +10,7 @@
   const sec = document.querySelector('.sdlc');
   if (!sec) return;
   const root = document.documentElement;
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('force-motion');
+  const still = false; // always animate, regardless of the OS reduced-motion setting
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const ease = (u) => 1 - Math.pow(1 - u, 3);
   const DURATION = 13000;           // the whole film, ms

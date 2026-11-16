@@ -8,7 +8,7 @@
   if (!cv || !cv.getContext) return;
   const ctx = cv.getContext('2d');
   const root = document.documentElement;
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('force-motion');
+  const still = false; // always animate, regardless of the OS reduced-motion setting
   const fine = matchMedia('(hover: hover) and (pointer: fine)');
 
   // Software development vocabulary, by topic: AI tooling, the web stack, engineering

@@ -10,7 +10,6 @@
   const name = document.querySelector('.hero-name');
   if (!name) return;
   const forced = /[?&]motion=1(&|$)/.test(location.search);
-  if (!forced && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const L = [...name.querySelectorAll('i')], n = L.length;
   if (!n) return;

@@ -1029,15 +1029,7 @@ html:not(.js) .proj-more { display: none; }
   .foot-mail { text-align: center; }
 }
 
-/* ── Reduced motion: everything simply present ───── */
-/* (?motion=1 adds .force-motion so motion can be checked in browsers that force reduce) */
-@media (prefers-reduced-motion: reduce) {
-  html:not(.force-motion) { scroll-behavior: auto; }
-  html:not(.force-motion) *, html:not(.force-motion) *::before, html:not(.force-motion) *::after { animation: none !important; transition: none !important; }
-  html.js:not(.force-motion) [data-reveal] > * { opacity: 1; transform: none; clip-path: none; }
-  html.js:not(.force-motion) [data-reveal].row::before { transform: none; }
-  html.js:not(.force-motion) .foot-name i { transform: none; }
-}
+/* Motion always plays: the OS reduced-motion setting is intentionally ignored. */
 
 @media print {
   .nav { position: static; }

@@ -4,7 +4,7 @@
 (() => {
   window.siteReady = true;
   const root = document.documentElement;
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !root.classList.contains('force-motion');
+  const still = false; // always animate, regardless of the OS reduced-motion setting
   const pointer = matchMedia('(hover: hover) and (min-width: 861px)');
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
