@@ -273,6 +273,26 @@
     <div class="rows projects">
       <article class="row proj" data-reveal>
         <span class="k row-n" aria-hidden="true">02</span>
+        <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-openpod"><span class="proj-name">OpenPod</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
+        <div class="row-body">
+          <p>A wildlife camera on a Raspberry Pi 5 running QNX that spots animals on the device with TensorFlow Lite and sends tiny sighting records, never video, to a ground station that estimates populations and flags declines.</p>
+        </div>
+        <div class="k row-meta">
+          <span class="hl">Runner-up, QNX prize</span>
+          <span>Hack Western 13, Nov 2026</span>
+          <a class="tlink" target="_blank" rel="noopener" href="https://devpost.com/software/pod-81c6ei">Devpost<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+          <a class="tlink" target="_blank" rel="noopener" href="https://github.com/cloudec11/HackWestern13">Read the code<svg class="ico" aria-hidden="true"><use href="#i-out"/></svg></a>
+        </div>
+        <div class="thumb" aria-hidden="true"><div class="thumb-in"><img class="tall" src="assets/img/openpod.jpg" width="600" height="805" alt="" loading="lazy" decoding="async"></div></div>
+        <div class="proj-case" id="case-openpod">
+          <div class="proj-case-in">
+            <div class="pc-text"><ol class="steps"><li><button class="pc-step" type="button" data-step="0"><span class="k" aria-hidden="true">01</span><span>A Raspberry Pi 5 on QNX 8.0 runs EfficientDet-Lite0 through QNX's TensorFlow Lite port, about 68 ms per frame.</span></button></li><li><button class="pc-step" type="button" data-step="1"><span class="k" aria-hidden="true">02</span><span>Each stage is its own real-time process under a supervisor that restarts crashes; store-and-forward lost 0 of 45 visits in an outage.</span></button></li><li><button class="pc-step" type="button" data-step="2"><span class="k" aria-hidden="true">03</span><span>The ground station estimates density per zone, runs 1,000 ten-year forecasts and suggests where conservation money cuts extinction risk most.</span></button></li></ol><p class="k stack">QNX 8.0 · Raspberry Pi 5 · C · TensorFlow Lite · Python · SQLite</p></div>
+            <div class="pc-screen"><img class="frame frame-contain" src="assets/img/openpod.jpg" width="600" height="805" alt="The OpenPod prototype: a Logitech webcam under a white conical hat, mounted on a servo above a Raspberry Pi 5 case" loading="lazy" decoding="async"><div class="frame frame-type" role="img" aria-label="Under full CPU load at real-time priority: 11.2 frames per second, 150 millisecond p99 latency"><span class="k">Under full CPU load</span><b>11.2 fps, 150 ms p99</b></div><div class="frame frame-type" role="img" aria-label="Each sighting record is about 160 bytes"><span class="k">Per sighting</span><b>~160 bytes, no video</b></div></div>
+          </div>
+        </div>
+      </article>
+      <article class="row proj" data-reveal>
+        <span class="k row-n" aria-hidden="true">03</span>
         <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-qwen"><span class="proj-name">Qwen3 decode engine</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>A custom inference engine, built with Codex and Claude as coding agents, that decodes Qwen3-4B on one H100 up to 6.2 times faster than the Transformers baseline while passing a token-by-token check against the reference model.</p>
@@ -292,7 +312,7 @@
       </article>
 
       <article class="row proj" data-reveal>
-        <span class="k row-n" aria-hidden="true">03</span>
+        <span class="k row-n" aria-hidden="true">04</span>
         <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-findmyseat"><span class="proj-name">FindMySeat</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>Ultrasonic sensors on Raspberry Pis stream seat occupancy to a live Next.js dashboard, with a Gemini chat assistant for seat recommendations.</p>
@@ -314,7 +334,7 @@
       </article>
 
       <article class="row proj" data-reveal>
-        <span class="k row-n" aria-hidden="true">04</span>
+        <span class="k row-n" aria-hidden="true">05</span>
         <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-gripguardian"><span class="proj-name">Grip Guardian</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>A mouse fitted with pressure and position sensors, and a React dashboard that shows grip habits linked to repetitive strain injury live. Built in 36 hours.</p>
@@ -334,7 +354,7 @@
       </article>
 
       <article class="row proj proj-plain" data-reveal>
-        <span class="k row-n" aria-hidden="true">05</span>
+        <span class="k row-n" aria-hidden="true">06</span>
         <h3><span class="proj-name">GuideBot</span></h3>
         <div class="row-body">
           <p>A navigation robot for visually impaired users: an ESP32 robot driven over Bluetooth, with TensorFlow object recognition describing nearby objects.</p>
@@ -348,7 +368,7 @@
       </article>
 
       <article class="row proj" data-reveal>
-        <span class="k row-n" aria-hidden="true">06</span>
+        <span class="k row-n" aria-hidden="true">07</span>
         <h3><button class="proj-toggle" type="button" aria-expanded="false" aria-controls="case-iwitness"><span class="proj-name">IWitness</span><span class="k proj-more" aria-hidden="true"><i class="plus"></i><span class="more-open">Expand</span><span class="more-close">Close</span></span></button></h3>
         <div class="row-body">
           <p>A web app that watches live camera feeds and uses TensorFlow to flag crimes and medical emergencies for first responders.</p>
@@ -368,7 +388,7 @@
       </article>
 
       <article class="row proj proj-plain" data-reveal>
-        <span class="k row-n" aria-hidden="true">07</span>
+        <span class="k row-n" aria-hidden="true">08</span>
         <h3><span class="proj-name">Computer Science Undergrad Society website</span></h3>
         <div class="row-body">
           <p>A responsive club site in React that centralises events, announcements and resources for 100+ active members.</p>
@@ -381,7 +401,7 @@
       </article>
 
       <article class="row proj proj-plain" data-reveal>
-        <span class="k row-n" aria-hidden="true">08</span>
+        <span class="k row-n" aria-hidden="true">09</span>
         <h3><span class="proj-name">Compost Can</span></h3>
         <div class="row-body">
           <p>A product site for a compost bin concept, built with a school group: the product, the research behind it, how it works and a return program.</p>

@@ -279,6 +279,8 @@
         'while True:', '    states = {s.id: read_seat(s) for s in sensors}', '    requests.post(API + "/seats", json=states)', '    time.sleep(1)', '',
         'export async function GET() {', '  const seats = await db.collection("seats").find().toArray();', '  return Response.json(seats);', '}', '',
         'void loop() {', '  if (SerialBT.available()) drive(SerialBT.read());', '  delay(20);', '}', '',
+        'struct sched_param sp = { .sched_priority = 15 };', 'pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp);', '',
+        'while (ring_pop(&ring, &frame) == 0) {', '    n = detect(interp, &frame, boxes, MAX_BOXES);', '    track_update(&tracker, boxes, n, frame.ts);', '}', '',
         'for frame in camera.stream():', '    poses = model.predict(frame)', '    if fall_detected(poses) or hands_up(poses):', '        alert(responders, frame)', '',
       ];
     const startAt = Math.floor(Math.random() * src.length);
