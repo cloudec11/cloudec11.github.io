@@ -34,7 +34,7 @@ CNAME                   custom domain for GitHub Pages
 
 ## Notes
 
-- **Motion.** Sections reveal as you scroll and replay when you scroll back past them. Everything settles to a still, fully visible page when the visitor has reduced motion turned on. Add `?motion=1` to the URL to force the motion back on for testing.
+- **Motion.** Sections reveal as you scroll and replay when you scroll back past them.
 - **Signal case study.** On wide screens the Signal section pins in place while its steps play through, with faint code scrolling behind it.
 - **Colour schemes.** Pick one from the swatch in the nav; the choice is saved in the browser. With nothing saved, a device in dark mode starts on Night. All colours are tokens at the top of `assets/site.css`, one block per scheme.
 - **Project panels.** Each project row expands into a larger panel with steps and a screenshot viewer. To change a project, edit its row in `index.html`: the steps, stack line and frames live in its `.proj-case` block. On phones and tablets the expand control sits under the row's picture and the panel opens right there. Closing a panel plays out (the steps fade, then it folds away) rather than snapping shut.
@@ -52,4 +52,9 @@ For the touch icon, use `--window-size=180,180` and `drafts/og/icon.html`.
 
 ## Deploying
 
-Push to `main`. GitHub Pages publishes the repository root, and `CNAME` points it at eric-chen.ca.
+GitHub Actions (`.github/workflows/deploy.yml`) handles CI/CD:
+
+- **On every push and pull request** it assembles the site (everything except `drafts/` and repo files), validates the HTML, checks for broken links and runs Lighthouse against the budgets in `.github/lighthouserc.json`.
+- **On a push to `main`** it deploys to GitHub Pages, but only if every check passed. Pull requests are tested and never deployed.
+
+`CNAME` points the site at eric-chen.ca. In the repo settings, Pages must use **GitHub Actions** as its source.
