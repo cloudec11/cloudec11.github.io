@@ -31,7 +31,7 @@ jobs:
       - name: Assemble site
         run: |
           mkdir -p _site
-          rsync -a --exclude '.git*' --exclude 'drafts/' --exclude '.impeccable/' \
+          rsync -a --exclude '.git*' --exclude 'drafts/' --exclude '.impeccable/' --exclude '.htmlvalidate.json' \
                    --exclude 'README.md' --exclude '_site/' ./ _site/
 
       # Fails the build if index.html has invalid or inaccessible markup
